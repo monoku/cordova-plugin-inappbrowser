@@ -29,9 +29,9 @@
 #define    kInAppBrowserToolbarBarPositionBottom @"bottom"
 #define    kInAppBrowserToolbarBarPositionTop @"top"
 
-#define    TOOLBAR_HEIGHT 44.0
-#define    LOCATIONBAR_HEIGHT 21.0
-#define    FOOTER_HEIGHT ((TOOLBAR_HEIGHT) + (LOCATIONBAR_HEIGHT))
+#define    TOOLBAR_HEIGHT 50
+#define    LOCATIONBAR_HEIGHT 0//21.0
+#define    FOOTER_HEIGHT 0//((TOOLBAR_HEIGHT) + (LOCATIONBAR_HEIGHT))
 
 #pragma mark CDVInAppBrowser
 
@@ -409,7 +409,7 @@
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsDictionary:@{@"type":@"loadstop", @"url":url}];
         [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
-
+        
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
     }
 }
@@ -463,10 +463,25 @@
         _prevUserAgent = prevUserAgent;
         _browserOptions = browserOptions;
         _webViewDelegate = [[CDVWebViewDelegate alloc] initWithDelegate:self];
+        NSLog(@"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+        NSLog(self.navigationDelegate);
+        NSLog(@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         [self createViews];
     }
 
     return self;
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    //UIGraphicsBeginImageContext(newSize);
+    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+    // Pass 1.0 to force exact pixel size.
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    [newImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 - (void)createViews
@@ -508,14 +523,48 @@
     self.spinner.opaque = NO;
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
-
-    self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(close)];
+    
+    NSString *pathC = [[NSBundle mainBundle] pathForResource:@"icon_close" ofType:@"jpg"];
+    UIImage *imgC = [[UIImage imageNamed:pathC] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    self.closeButton = [[UIBarButtonItem alloc] initWithImage:imgC
+                                                        style:UIBarButtonItemStylePlain
+                                                       target:self
+                                                       action:@selector(close)];
     self.closeButton.enabled = YES;
+    
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"icon_fav" ofType:@"jpg"];
+    UIImage *img = [[UIImage imageNamed:path] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    
+    self.favButton = [[UIBarButtonItem alloc] initWithImage:img
+                                                      style:UIBarButtonItemStylePlain
+                                                     target:self
+                                                     action:@selector(webViewFavPage)];
+    self.favButton.enabled = YES;
+    
+    NSString *pathSh = [[NSBundle mainBundle] pathForResource:@"icon_share" ofType:@"jpg"];
+    UIImage *imgSh = [[UIImage imageNamed:pathSh] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    
+    self.shareButton = [[UIBarButtonItem alloc] initWithImage:imgSh
+                                                        style:UIBarButtonItemStylePlain
+                                                       target:self
+                                                       action:@selector(webViewSharePage)];
+    self.shareButton.enabled = YES;
 
     UIBarButtonItem* flexibleSpaceButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    UIBarButtonItem* negativeSpacer = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                       target:nil action:nil];
+    negativeSpacer.width = -5;
+    
+    
+    UIBarButtonItem* negativeSpacerLarge = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                       target:nil action:nil];
+    negativeSpacerLarge.width = -10;
 
     UIBarButtonItem* fixedSpaceButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixedSpaceButton.width = 20;
+    fixedSpaceButton.width = 4;
 
     float toolbarY = toolbarIsAtBottom ? self.view.bounds.size.height - TOOLBAR_HEIGHT : 0.0;
     CGRect toolbarFrame = CGRectMake(0.0, toolbarY, self.view.bounds.size.width, TOOLBAR_HEIGHT);
@@ -524,7 +573,10 @@
     self.toolbar.alpha = 1.000;
     self.toolbar.autoresizesSubviews = YES;
     self.toolbar.autoresizingMask = toolbarIsAtBottom ? (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin) : UIViewAutoresizingFlexibleWidth;
-    self.toolbar.barStyle = UIBarStyleBlackOpaque;
+    //self.toolbar.barStyle = UIBarStyle;
+    self.toolbar.tintColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0];
+    self.toolbar.tintColor = [UIColor whiteColor];
+    self.toolbar.translucent = NO;
     self.toolbar.clearsContextBeforeDrawing = NO;
     self.toolbar.clipsToBounds = NO;
     self.toolbar.contentMode = UIViewContentModeScaleToFill;
@@ -547,7 +599,7 @@
     self.addressLabel.clipsToBounds = YES;
     self.addressLabel.contentMode = UIViewContentModeScaleToFill;
     self.addressLabel.enabled = YES;
-    self.addressLabel.hidden = NO;
+    self.addressLabel.hidden = YES;
     self.addressLabel.lineBreakMode = NSLineBreakByTruncatingTail;
 
     if ([self.addressLabel respondsToSelector:NSSelectorFromString(@"setMinimumScaleFactor:")]) {
@@ -565,17 +617,34 @@
     self.addressLabel.textColor = [UIColor colorWithWhite:1.000 alpha:1.000];
     self.addressLabel.userInteractionEnabled = NO;
 
-    NSString* frontArrowString = NSLocalizedString(@"►", nil); // create arrow from Unicode char
-    self.forwardButton = [[UIBarButtonItem alloc] initWithTitle:frontArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goForward:)];
-    self.forwardButton.enabled = YES;
-    self.forwardButton.imageInsets = UIEdgeInsetsZero;
+//    NSString* frontArrowString = NSLocalizedString(@"►", nil); // create arrow from Unicode char
+//    self.forwardButton = [[UIBarButtonItem alloc] initWithTitle:frontArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goForward:)];
+//    self.forwardButton.enabled = YES;
+//    self.forwardButton.imageInsets = UIEdgeInsetsZero;
 
-    NSString* backArrowString = NSLocalizedString(@"◄", nil); // create arrow from Unicode char
-    self.backButton = [[UIBarButtonItem alloc] initWithTitle:backArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
-    self.backButton.enabled = YES;
-    self.backButton.imageInsets = UIEdgeInsetsZero;
-
-    [self.toolbar setItems:@[self.closeButton, flexibleSpaceButton, self.backButton, fixedSpaceButton, self.forwardButton]];
+    NSString *pathf = [[NSBundle mainBundle] pathForResource:@"icon_arrow_right" ofType:@"jpg"];
+    UIImage *imgf = [[UIImage imageNamed:pathf] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    
+    self.forwardButton = [[UIBarButtonItem alloc] initWithImage:imgf
+                                                       style:UIBarButtonItemStylePlain
+                                                      target:self
+                                                      action:@selector(goForward)];
+    
+//    NSString* backArrowString = NSLocalizedString(@"◄", nil); // create arrow from Unicode char
+//    self.backButton = [[UIBarButtonItem alloc] initWithTitle:backArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
+//    self.backButton.enabled = YES;
+//    self.backButton.imageInsets = UIEdgeInsetsZero;
+    
+    NSString *pathb = [[NSBundle mainBundle] pathForResource:@"icon_arrow_left" ofType:@"jpg"];
+    UIImage *imgb = [[UIImage imageNamed:pathb] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    
+    self.backButton = [[UIBarButtonItem alloc] initWithImage:imgb
+                                                      style:UIBarButtonItemStylePlain
+                                                     target:self
+                                                     action:@selector(goBack)];
+    self.favButton.enabled = YES;
+    
+    [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
 
     self.view.backgroundColor = [UIColor grayColor];
     [self.view addSubview:self.toolbar];
@@ -735,7 +804,8 @@
 {
     [CDVUserAgentUtil releaseLock:&_userAgentLockToken];
     self.currentURL = nil;
-
+    
+    NSLog(@"<<<<<< CLOOOOOOOOOOOOOOOOOOSE >>>>>>>>");
     if ((self.navigationDelegate != nil) && [self.navigationDelegate respondsToSelector:@selector(browserExit)]) {
         [self.navigationDelegate browserExit];
     }
@@ -748,6 +818,39 @@
             [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
         }
     });
+}
+
+
+
+- (void)webViewFavPage
+{
+    NSLog(@"<<<<<< Faving");
+    if (self.navigationDelegate.callbackId != nil) {
+        // TODO: It would be more useful to return the URL the page is actually on (e.g. if it's been redirected).
+        NSString* url = [self.navigationDelegate.inAppBrowserViewController.currentURL absoluteString];
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                      messageAsDictionary:@{@"type":@"fav", @"url":url}];
+        [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
+        
+        [self.navigationDelegate.commandDelegate sendPluginResult:pluginResult callbackId:self.navigationDelegate.callbackId];
+    }
+}
+
+- (void)webViewSharePage
+{
+    NSLog(@"<<<<<< Sharing");
+    if (self.navigationDelegate.callbackId != nil) {
+        // TODO: It would be more useful to return the URL the page is actually on (e.g. if it's been redirected).
+        NSLog(@"Sharing");
+        NSString* url = [self.navigationDelegate.inAppBrowserViewController.currentURL absoluteString];
+        NSLog(@"Sharing %@", url);
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                      messageAsDictionary:@{@"type":@"share", @"url":url}];
+        NSLog(@"Sharing 2");
+        [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
+        NSLog(@"Sharing 3");
+        [self.navigationDelegate.commandDelegate sendPluginResult:pluginResult callbackId:self.navigationDelegate.callbackId];
+    }
 }
 
 - (void)navigateTo:(NSURL*)url
@@ -910,7 +1013,7 @@
         self.location = YES;
         self.toolbar = YES;
         self.closebuttoncaption = nil;
-        self.toolbarposition = kInAppBrowserToolbarBarPositionBottom;
+        self.toolbarposition = kInAppBrowserToolbarBarPositionTop;
         self.clearcache = NO;
         self.clearsessioncache = NO;
 

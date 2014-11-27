@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -70,6 +71,8 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String SYSTEM = "_system";
     // private static final String BLANK = "_blank";
     private static final String EXIT_EVENT = "exit";
+    private static final String SHARE_EVENT = "share";
+    private static final String FAV_EVENT = "fav";
     private static final String LOCATION = "location";
     private static final String HIDDEN = "hidden";
     private static final String LOAD_START_EVENT = "loadstart";
@@ -358,6 +361,35 @@ public class InAppBrowser extends CordovaPlugin {
     }
 
     /**
+     * Notifies Sharing
+     */
+    public void sharePage(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("type", SHARE_EVENT);
+            obj.put("url", this.inAppWebView.getUrl());
+            Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> SHARE");
+            sendUpdate(obj, true);
+        } catch (JSONException ex) {
+            Log.d(LOG_TAG, "Should never happen SHARE");
+        }
+    }
+
+    /**
+     * Notifies Sharing
+     */
+    public void favPage(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("type", FAV_EVENT);
+            obj.put("url", this.inAppWebView.getUrl());
+            sendUpdate(obj, true);
+        } catch (JSONException ex) {
+            Log.d(LOG_TAG, "Should never happen SHARE");
+        }
+    }
+
+    /**
      * Checks to see if it is possible to go back one page in history, then does so.
      */
     private void goBack() {
@@ -470,9 +502,9 @@ public class InAppBrowser extends CordovaPlugin {
                 // Toolbar layout
                 RelativeLayout toolbar = new RelativeLayout(cordova.getActivity());
                 //Please, no more black! 
-                toolbar.setBackgroundColor(android.graphics.Color.LTGRAY);
-                toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(44)));
-                toolbar.setPadding(this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2));
+                toolbar.setBackgroundColor(Color.WHITE);
+                toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(62)));
+                toolbar.setPadding(this.dpToPixels(8), this.dpToPixels(10), this.dpToPixels(8), this.dpToPixels(10));
                 toolbar.setHorizontalGravity(Gravity.LEFT);
                 toolbar.setVerticalGravity(Gravity.TOP);
 
@@ -483,6 +515,13 @@ public class InAppBrowser extends CordovaPlugin {
                 actionButtonContainer.setVerticalGravity(Gravity.CENTER_VERTICAL);
                 actionButtonContainer.setId(1);
 
+                // Action Button Container layout
+                RelativeLayout secondButtonContainer = new RelativeLayout(cordova.getActivity());
+                secondButtonContainer.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                secondButtonContainer.setHorizontalGravity(Gravity.RIGHT);
+                secondButtonContainer.setVerticalGravity(Gravity.CENTER_VERTICAL);
+                secondButtonContainer.setId(8);
+
                 // Back button
                 Button back = new Button(cordova.getActivity());
                 RelativeLayout.LayoutParams backLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
@@ -491,7 +530,7 @@ public class InAppBrowser extends CordovaPlugin {
                 back.setContentDescription("Back Button");
                 back.setId(2);
                 Resources activityRes = cordova.getActivity().getResources();
-                int backResId = activityRes.getIdentifier("ic_action_previous_item", "drawable", cordova.getActivity().getPackageName());
+                int backResId = activityRes.getIdentifier("icon_arrow_left", "drawable", cordova.getActivity().getPackageName());
                 Drawable backIcon = activityRes.getDrawable(backResId);
                 if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
                 {
@@ -514,7 +553,7 @@ public class InAppBrowser extends CordovaPlugin {
                 forward.setLayoutParams(forwardLayoutParams);
                 forward.setContentDescription("Forward Button");
                 forward.setId(3);
-                int fwdResId = activityRes.getIdentifier("ic_action_next_item", "drawable", cordova.getActivity().getPackageName());
+                int fwdResId = activityRes.getIdentifier("icon_arrow_right", "drawable", cordova.getActivity().getPackageName());
                 Drawable fwdIcon = activityRes.getDrawable(fwdResId);
                 if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
                 {
@@ -558,9 +597,9 @@ public class InAppBrowser extends CordovaPlugin {
                 RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
                 closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 close.setLayoutParams(closeLayoutParams);
-                forward.setContentDescription("Close Button");
+                close.setContentDescription("Close Button");
                 close.setId(5);
-                int closeResId = activityRes.getIdentifier("ic_action_remove", "drawable", cordova.getActivity().getPackageName());
+                int closeResId = activityRes.getIdentifier("icon_close", "drawable", cordova.getActivity().getPackageName());
                 Drawable closeIcon = activityRes.getDrawable(closeResId);
                 if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
                 {
@@ -573,6 +612,54 @@ public class InAppBrowser extends CordovaPlugin {
                 close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         closeDialog();
+                    }
+                });
+
+                // Fav button
+                Button fav = new Button(cordova.getActivity());
+                RelativeLayout.LayoutParams favLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                favLayoutParams.addRule(RelativeLayout.LEFT_OF, 5);
+                favLayoutParams.setMargins(0, 0, this.dpToPixels(12), 0);
+                fav.setLayoutParams(favLayoutParams);
+                fav.setContentDescription("Fav Button");
+                fav.setId(9);
+                int favResId = activityRes.getIdentifier("icon_fav", "drawable", cordova.getActivity().getPackageName());
+                Drawable favIcon = activityRes.getDrawable(favResId);
+                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
+                {
+                    fav.setBackgroundDrawable(favIcon);
+                }
+                else
+                {
+                    fav.setBackground(favIcon);
+                }
+                fav.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        favPage();
+                    }
+                });
+
+                // Share button
+                Button share = new Button(cordova.getActivity());
+                RelativeLayout.LayoutParams shareLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                shareLayoutParams.addRule(RelativeLayout.LEFT_OF, 9);
+                shareLayoutParams.setMargins(0, 0, this.dpToPixels(10), 0);
+                share.setLayoutParams(shareLayoutParams);
+                forward.setContentDescription("Share Button");
+                share.setId(10);
+                int shareResId = activityRes.getIdentifier("icon_share", "drawable", cordova.getActivity().getPackageName());
+                Drawable shareIcon = activityRes.getDrawable(shareResId);
+                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
+                {
+                    share.setBackgroundDrawable(shareIcon);
+                }
+                else
+                {
+                    share.setBackground(shareIcon);
+                }
+                share.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        sharePage();
                     }
                 });
 
@@ -615,10 +702,15 @@ public class InAppBrowser extends CordovaPlugin {
                 actionButtonContainer.addView(back);
                 actionButtonContainer.addView(forward);
 
+                // Add the back and forward buttons to our action button container layout
+                secondButtonContainer.addView(close);
+                secondButtonContainer.addView(fav);
+                secondButtonContainer.addView(share);
+
                 // Add the views to our toolbar
                 toolbar.addView(actionButtonContainer);
-                toolbar.addView(edittext);
-                toolbar.addView(close);
+//                toolbar.addView(edittext);
+                toolbar.addView(secondButtonContainer);
 
                 // Don't add the toolbar if its been disabled
                 if (getShowLocationBar()) {
@@ -664,7 +756,9 @@ public class InAppBrowser extends CordovaPlugin {
      * @param status the status code to return to the JavaScript environment
      */    
     private void sendUpdate(JSONObject obj, boolean keepCallback, PluginResult.Status status) {
+        Log.d(LOG_TAG, "BEFORE");
         if (callbackContext != null) {
+            Log.d(LOG_TAG, "AFTER");
             PluginResult result = new PluginResult(status, obj);
             result.setKeepCallback(keepCallback);
             callbackContext.sendPluginResult(result);
