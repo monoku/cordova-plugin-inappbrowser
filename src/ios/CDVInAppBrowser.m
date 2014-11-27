@@ -524,7 +524,7 @@
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
     
-    NSString *pathC = @"icon_close.jpg"];
+    NSString *pathC = @"icon_close.jpg";
     UIImage *imgC = [[UIImage imageNamed:pathC] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.closeButton = [[UIBarButtonItem alloc] initWithImage:imgC
                                                         style:UIBarButtonItemStylePlain
@@ -532,8 +532,8 @@
                                                        action:@selector(close)];
     self.closeButton.enabled = YES;
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"icon_fav" ofType:@"jpg"];
-    UIImage *img = [UIImage imageNamed:path];
+    NSString *path = @"icon_fav.jpg";
+    UIImage *img = [[UIImage imageNamed:path] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     self.favButton = [[UIBarButtonItem alloc] initWithImage:img
                                                       style:UIBarButtonItemStylePlain
@@ -541,7 +541,7 @@
                                                      action:@selector(webViewFavPage)];
     self.favButton.enabled = YES;
     
-    NSString *pathSh = [[NSBundle mainBundle] pathForResource:@"icon_share" ofType:@"jpg"];
+    NSString *pathSh = @"icon_share.jpg"];
     UIImage *imgSh = [[UIImage imageNamed:pathSh] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     self.shareButton = [[UIBarButtonItem alloc] initWithImage:imgSh
@@ -622,7 +622,7 @@
 //    self.forwardButton.enabled = YES;
 //    self.forwardButton.imageInsets = UIEdgeInsetsZero;
 
-    NSString *pathf = [[NSBundle mainBundle] pathForResource:@"icon_arrow_right" ofType:@"jpg"];
+    NSString *pathf = @"icon_arrow_right.jpg";
     UIImage *imgf = [[UIImage imageNamed:pathf] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     self.forwardButton = [[UIBarButtonItem alloc] initWithImage:imgf
@@ -635,7 +635,7 @@
 //    self.backButton.enabled = YES;
 //    self.backButton.imageInsets = UIEdgeInsetsZero;
     
-    NSString *pathb = [[NSBundle mainBundle] pathForResource:@"icon_arrow_left" ofType:@"jpg"];
+    NSString *pathb = @"icon_arrow_left.jpg";
     UIImage *imgb = [[UIImage imageNamed:pathb] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     self.backButton = [[UIBarButtonItem alloc] initWithImage:imgb
