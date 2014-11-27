@@ -541,7 +541,7 @@
                                                      action:@selector(webViewFavPage)];
     self.favButton.enabled = YES;
     
-    NSString *pathSh = @"icon_share.jpg"];
+    NSString *pathSh = @"icon_share.jpg";
     UIImage *imgSh = [[UIImage imageNamed:pathSh] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     self.shareButton = [[UIBarButtonItem alloc] initWithImage:imgSh
