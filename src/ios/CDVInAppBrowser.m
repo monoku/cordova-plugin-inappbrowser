@@ -524,7 +524,7 @@
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
     
-    NSString *pathC = [[NSBundle mainBundle] pathForResource:@"icon_close" ofType:@"jpg"];
+    NSString *pathC = @"icon_close.jpg"];
     UIImage *imgC = [[UIImage imageNamed:pathC] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.closeButton = [[UIBarButtonItem alloc] initWithImage:imgC
                                                         style:UIBarButtonItemStylePlain
@@ -533,7 +533,7 @@
     self.closeButton.enabled = YES;
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"icon_fav" ofType:@"jpg"];
-    UIImage *img = [[UIImage imageNamed:path] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    UIImage *img = [UIImage imageNamed:path];
     
     self.favButton = [[UIBarButtonItem alloc] initWithImage:img
                                                       style:UIBarButtonItemStylePlain
