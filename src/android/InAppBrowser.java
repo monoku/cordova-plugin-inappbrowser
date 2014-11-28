@@ -371,7 +371,8 @@ public class InAppBrowser extends CordovaPlugin {
             obj.put("url", this.inAppWebView.getUrl());
             Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> SHARE");
             sendUpdate(obj, true);
-            injectDeferredObject("try{window.cordovaInappBrowserShareCallBack();}catch(e){}", null);
+            closeDialog();
+//            injectDeferredObject("try{window.cordovaInappBrowserShareCallBack();}catch(e){}", null);
         } catch (JSONException ex) {
             Log.d(LOG_TAG, "Should never happen SHARE");
         }

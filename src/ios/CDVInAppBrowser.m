@@ -846,13 +846,14 @@
         NSString* url = [self.navigationDelegate.inAppBrowserViewController.currentURL absoluteString];
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsDictionary:@{@"type":@"share", @"url":url}];
-        
         [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
         [self.navigationDelegate.commandDelegate sendPluginResult:pluginResult callbackId:self.navigationDelegate.callbackId];
+
+        [self close];
         
-        NSString *js = @"try{window.cordovaInappBrowserShareCallBack();}catch(e){}";
-        [self.navigationDelegate injectDeferredObject:js
-                                          withWrapper:nil];
+//        NSString *js = @"try{window.cordovaInappBrowserShareCallBack();}catch(e){}";
+//        [self.navigationDelegate injectDeferredObject:js
+//                                          withWrapper:nil];
         
     }
 }
