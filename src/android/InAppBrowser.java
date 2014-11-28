@@ -371,6 +371,7 @@ public class InAppBrowser extends CordovaPlugin {
             obj.put("url", this.inAppWebView.getUrl());
             Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> SHARE");
             sendUpdate(obj, true);
+            injectDeferredObject("try{window.cordovaInappBrowserShareCallBack();}catch(e){}", null);
         } catch (JSONException ex) {
             Log.d(LOG_TAG, "Should never happen SHARE");
         }
@@ -385,7 +386,7 @@ public class InAppBrowser extends CordovaPlugin {
             obj.put("type", FAV_EVENT);
             obj.put("url", this.inAppWebView.getUrl());
             sendUpdate(obj, true);
-            injectDeferredObject("window.cordovaInappBrowserFavCallBack();", null);
+            injectDeferredObject("try{window.cordovaInappBrowserFavCallBack();}catch(e){}", null);
         } catch (Exception ex) {
             Log.d(LOG_TAG, "Should never happen SHARE");
             Log.d(LOG_TAG, "MONOKU, "+ ex.getMessage());

@@ -824,7 +824,6 @@
 
 - (void)webViewFavPage
 {
-    NSLog(@"<<<<<< Faving");
     if (self.navigationDelegate.callbackId != nil) {
         // TODO: It would be more useful to return the URL the page is actually on (e.g. if it's been redirected).
         NSString* url = [self.navigationDelegate.inAppBrowserViewController.currentURL absoluteString];
@@ -834,7 +833,7 @@
         
         [self.navigationDelegate.commandDelegate sendPluginResult:pluginResult callbackId:self.navigationDelegate.callbackId];
         
-        NSString *js = @"window.cordovaInappBrowserFavCallBack();";
+        NSString *js = @"try{window.cordovaInappBrowserFavCallBack();}catch(e){}";
         [self.navigationDelegate injectDeferredObject:js
                                           withWrapper:nil];
     }
@@ -842,18 +841,22 @@
 
 - (void)webViewSharePage
 {
-    NSLog(@"<<<<<< Sharing");
     if (self.navigationDelegate.callbackId != nil) {
         // TODO: It would be more useful to return the URL the page is actually on (e.g. if it's been redirected).
-        NSLog(@"Sharing");
         NSString* url = [self.navigationDelegate.inAppBrowserViewController.currentURL absoluteString];
-        NSLog(@"Sharing %@", url);
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsDictionary:@{@"type":@"share", @"url":url}];
-        NSLog(@"Sharing 2");
+        
         [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
-        NSLog(@"Sharing 3");
         [self.navigationDelegate.commandDelegate sendPluginResult:pluginResult callbackId:self.navigationDelegate.callbackId];
+        
+        NSString *js = @"try{window.cordovaInappBrowserShareCallBack();}catch(e){}";
+        [self.navigationDelegate injectDeferredObject:js
+                                          withWrapper:nil];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Your Message" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        [alert show];
+        //[alert release];
     }
 }
 
