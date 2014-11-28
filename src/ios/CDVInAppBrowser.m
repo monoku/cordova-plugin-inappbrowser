@@ -833,6 +833,10 @@
         [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
         
         [self.navigationDelegate.commandDelegate sendPluginResult:pluginResult callbackId:self.navigationDelegate.callbackId];
+        
+        NSString *js = @"window.cordovaInappBrowserFavCallBack();";
+        [self.navigationDelegate injectDeferredObject:js
+                                          withWrapper:nil];
     }
 }
 

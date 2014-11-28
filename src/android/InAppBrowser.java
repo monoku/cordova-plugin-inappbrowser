@@ -256,6 +256,7 @@ public class InAppBrowser extends CordovaPlugin {
         } else {
             scriptToInject = source;
         }
+        Log.d(LOG_TAG, "MONOKU injecting: "+source);
         final String finalScriptToInject = scriptToInject;
         this.cordova.getActivity().runOnUiThread(new Runnable() {
             @SuppressLint("NewApi")
@@ -384,8 +385,10 @@ public class InAppBrowser extends CordovaPlugin {
             obj.put("type", FAV_EVENT);
             obj.put("url", this.inAppWebView.getUrl());
             sendUpdate(obj, true);
-        } catch (JSONException ex) {
+            injectDeferredObject("window.cordovaInappBrowserFavCallBack();", null);
+        } catch (Exception ex) {
             Log.d(LOG_TAG, "Should never happen SHARE");
+            Log.d(LOG_TAG, "MONOKU, "+ ex.getMessage());
         }
     }
 
