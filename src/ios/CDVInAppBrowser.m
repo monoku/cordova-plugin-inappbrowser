@@ -854,9 +854,6 @@
         [self.navigationDelegate injectDeferredObject:js
                                           withWrapper:nil];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Your Message" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
-        //[alert release];
     }
 }
 
