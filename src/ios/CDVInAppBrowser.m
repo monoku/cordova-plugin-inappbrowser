@@ -627,7 +627,7 @@
     
     self.forwardButton = [[UIBarButtonItem alloc] initWithImage:imgf
                                                        style:UIBarButtonItemStylePlain
-                                                      target:self
+                                                      target:self.webView
                                                       action:@selector(goForward)];
     
 //    NSString* backArrowString = NSLocalizedString(@"◄", nil); // create arrow from Unicode char
@@ -640,7 +640,7 @@
     
     self.backButton = [[UIBarButtonItem alloc] initWithImage:imgb
                                                       style:UIBarButtonItemStylePlain
-                                                     target:self
+                                                     target:self.webView
                                                      action:@selector(goBack)];
     self.favButton.enabled = YES;
     
