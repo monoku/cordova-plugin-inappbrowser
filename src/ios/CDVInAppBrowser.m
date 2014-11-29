@@ -811,13 +811,13 @@
     }
 
     // Run later to avoid the "took a long time" log message.
-//    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         if ([self respondsToSelector:@selector(presentingViewController)]) {
             [[self presentingViewController] dismissViewControllerAnimated:YES completion:nil];
         } else {
             [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
         }
-//    });
+    });
 }
 
 
