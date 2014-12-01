@@ -29,7 +29,7 @@
 #define    kInAppBrowserToolbarBarPositionBottom @"bottom"
 #define    kInAppBrowserToolbarBarPositionTop @"top"
 
-#define    TOOLBAR_HEIGHT 50
+#define    TOOLBAR_HEIGHT 56
 #define    LOCATIONBAR_HEIGHT 0//21.0
 #define    FOOTER_HEIGHT 0//((TOOLBAR_HEIGHT) + (LOCATIONBAR_HEIGHT))
 
