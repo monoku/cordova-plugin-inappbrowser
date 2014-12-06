@@ -214,7 +214,7 @@
         return;
     }
 
-    _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
+//    _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
 
     CDVInAppBrowserNavigationController* nav = [[CDVInAppBrowserNavigationController alloc]
                                    initWithRootViewController:self.inAppBrowserViewController];
@@ -440,10 +440,10 @@
     // Also - this is required for the PDF/User-Agent bug work-around.
     self.inAppBrowserViewController = nil;
 
-    if (IsAtLeastiOSVersion(@"7.0")) {
-        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
-    }
-
+//    if (IsAtLeastiOSVersion(@"7.0")) {
+//        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
+//    }
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     _previousStatusBarStyle = -1; // this value was reset before reapplying it. caused statusbar to stay black on ios7
 }
 
