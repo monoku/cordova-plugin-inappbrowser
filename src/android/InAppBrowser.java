@@ -80,6 +80,7 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String LOAD_ERROR_EVENT = "loaderror";
     private static final String CLEAR_ALL_CACHE = "clearcache";
     private static final String CLEAR_SESSION_CACHE = "clearsessioncache";
+    private static final String HIDE_FAV = "hidefav";
 
     private InAppBrowserDialog dialog;
     private WebView inAppWebView;
@@ -471,6 +472,7 @@ public class InAppBrowser extends CordovaPlugin {
                     clearSessionCache = cache.booleanValue();
                 }
             }
+            Boolean hideFav = features.get(HIDE_FAV);
         }
         
         final CordovaWebView thatWebView = this.webView;
@@ -712,7 +714,9 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Add the back and forward buttons to our action button container layout
                 secondButtonContainer.addView(close);
-                secondButtonContainer.addView(fav);
+                if( !hideFav ){
+                    secondButtonContainer.addView(fav);
+                }
                 secondButtonContainer.addView(share);
 
                 // Add the views to our toolbar

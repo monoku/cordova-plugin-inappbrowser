@@ -220,6 +220,10 @@
                                    initWithRootViewController:self.inAppBrowserViewController];
     nav.orientationDelegate = self.inAppBrowserViewController;
     nav.navigationBarHidden = YES;
+    if (IsAtLeastiOSVersion(@"7.0")) {
+        //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    }
     // Run later to avoid the "took a long time" log message.
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.inAppBrowserViewController != nil) {
@@ -244,6 +248,10 @@
         [[UIApplication sharedApplication] openURL:url];
     } else { // handle any custom schemes to plugins
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
+    }
+    if (IsAtLeastiOSVersion(@"7.0")) {
+        //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
 }
 
@@ -463,9 +471,6 @@
         _prevUserAgent = prevUserAgent;
         _browserOptions = browserOptions;
         _webViewDelegate = [[CDVWebViewDelegate alloc] initWithDelegate:self];
-        NSLog(@"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-        NSLog(self.navigationDelegate);
-        NSLog(@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         [self createViews];
     }
 
@@ -644,7 +649,12 @@
                                                      action:@selector(goBack)];
     self.favButton.enabled = YES;
     
-    [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+    
+    if (_browserOptions.hidefav != nil) {
+        [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+    }else{
+        [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+    }
 
     self.view.backgroundColor = [UIColor grayColor];
     [self.view addSubview:self.toolbar];
@@ -665,7 +675,7 @@
     self.closeButton = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleBordered target:self action:@selector(close)];
     self.closeButton.enabled = YES;
     self.closeButton.tintColor = [UIColor colorWithRed:60.0 / 255.0 green:136.0 / 255.0 blue:230.0 / 255.0 alpha:1];
-
+    
     NSMutableArray* items = [self.toolbar.items mutableCopy];
     [items replaceObjectAtIndex:0 withObject:self.closeButton];
     [self.toolbar setItems:items];
@@ -886,7 +896,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     if (IsAtLeastiOSVersion(@"7.0")) {
-        [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
+        //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
     [self rePositionViews];
 
@@ -1029,6 +1040,7 @@
         self.suppressesincrementalrendering = NO;
         self.hidden = NO;
         self.disallowoverscroll = NO;
+        self.hidefav = NO;
     }
 
     return self;

@@ -26,10 +26,10 @@
       <file leaf-file-name="InAppBrowser.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/android/InAppBrowser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3986111" vertical-offset="6838" max-vertical-offset="13050">
-              <caret line="499" column="68" selection-start-line="499" selection-start-column="68" selection-end-line="499" selection-end-column="68" />
+            <state vertical-scroll-proportion="0.625" vertical-offset="780" max-vertical-offset="13110">
+              <caret line="82" column="50" selection-start-line="82" selection-start-column="50" selection-end-line="82" selection-end-column="50" />
               <folding>
-                <element signature="e#0#39201#0" expanded="true" />
+                <element signature="e#0#39363#0" expanded="true" />
                 <element signature="imports" expanded="true" />
               </folding>
             </state>
@@ -82,6 +82,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -92,7 +93,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -266,7 +266,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1600" height="877" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -283,7 +283,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18164313" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20218228" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -316,10 +316,32 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/android/InAppBrowser.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="13440">
+          <caret line="499" column="68" selection-start-line="499" selection-start-column="68" selection-end-line="499" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#39363#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/android/InAppBrowser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="7335" max-vertical-offset="13440">
+          <caret line="499" column="68" selection-start-line="499" selection-start-column="68" selection-end-line="499" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#39363#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/android/InAppBrowser.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="8160" max-vertical-offset="13410">
           <caret line="556" column="65" selection-start-line="556" selection-start-column="65" selection-end-line="556" selection-end-column="65" />
           <folding>
-            <element signature="e#0#39201#0" expanded="true" />
+            <element signature="e#0#39363#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -330,7 +352,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="13425">
           <caret line="372" column="34" selection-start-line="372" selection-start-column="34" selection-end-line="372" selection-end-column="34" />
           <folding>
-            <element signature="e#0#39201#0" expanded="true" />
+            <element signature="e#0#39363#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -341,7 +363,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="13320">
           <caret line="645" column="49" selection-start-line="645" selection-start-column="49" selection-end-line="645" selection-end-column="49" />
           <folding>
-            <element signature="e#0#39201#0" expanded="true" />
+            <element signature="e#0#39363#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -352,7 +374,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="13380">
           <caret line="763" column="53" selection-start-line="763" selection-start-column="53" selection-end-line="763" selection-end-column="53" />
           <folding>
-            <element signature="e#0#39201#0" expanded="true" />
+            <element signature="e#0#39363#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -362,18 +384,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.16666667" vertical-offset="0" max-vertical-offset="11925">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/android/InAppBrowser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3986111" vertical-offset="6838" max-vertical-offset="13050">
-          <caret line="499" column="68" selection-start-line="499" selection-start-column="68" selection-end-line="499" selection-end-column="68" />
+        <state vertical-scroll-proportion="0.625" vertical-offset="780" max-vertical-offset="13110">
+          <caret line="82" column="50" selection-start-line="82" selection-start-column="50" selection-end-line="82" selection-end-column="50" />
           <folding>
-            <element signature="e#0#39201#0" expanded="true" />
+            <element signature="e#0#39363#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
