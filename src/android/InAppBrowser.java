@@ -473,7 +473,10 @@ public class InAppBrowser extends CordovaPlugin {
                     clearSessionCache = cache.booleanValue();
                 }
             }
-            hideFav = features.get(HIDE_FAV);
+            Log.d(LOG_TAG, "BEFORE " + hideFav);
+            Log.d(LOG_TAG, "BEFORE " + HIDE_FAV);
+            Log.d(LOG_TAG, "BEFORE " + features);
+            hideFav = features.get(HIDE_FAV) != null ? true : false;
         }
         
         final CordovaWebView thatWebView = this.webView;
