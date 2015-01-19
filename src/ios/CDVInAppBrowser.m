@@ -626,7 +626,7 @@
 //    self.forwardButton = [[UIBarButtonItem alloc] initWithTitle:frontArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goForward:)];
 //    self.forwardButton.enabled = YES;
 //    self.forwardButton.imageInsets = UIEdgeInsetsZero;
-
+    
     NSString *pathf = @"icon_arrow_right.jpg";
     UIImage *imgf = [[UIImage imageNamed:pathf] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
@@ -859,7 +859,7 @@
         [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
         [self.navigationDelegate.commandDelegate sendPluginResult:pluginResult callbackId:self.navigationDelegate.callbackId];
 
-        [self close];
+//        [self close];
         
 //        NSString *js = @"try{window.cordovaInappBrowserShareCallBack();}catch(e){}";
 //        [self.navigationDelegate injectDeferredObject:js

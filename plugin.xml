@@ -69,6 +69,11 @@
         <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_left.jpg" target="res/drawable-xhdpi/icon_arrow_left.jpg" />
         <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_left.jpg" target="res/drawable-xxhdpi/icon_arrow_left.jpg" />
 
+        <!--yolo resource-file src="src/android/res/drawable-hdpi/icon_arrow_left_active.jpg" target="res/drawable-hdpi/icon_arrow_left_active.jpg" />
+        <resource-file src="src/android/res/drawable-mdpi/icon_arrow_left_active.jpg" target="res/drawable-mdpi/icon_arrow_left_active.jpg" />
+        <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_left_active.jpg" target="res/drawable-xhdpi/icon_arrow_left_active.jpg" />
+        <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_left_active.jpg" target="res/drawable-xxhdpi/icon_arrow_left_active.jpg" /-->
+
         <!-- <resource-file src="src/android/res/drawable-hdpi/icon_arrow_left_active.jpg" target="res/drawable-hdpi/icon_arrow_left_active.jpg" />
         <resource-file src="src/android/res/drawable-mdpi/icon_arrow_left_active.jpg" target="res/drawable-mdpi/icon_arrow_left_active.jpg" />
         <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_left_active.jpg" target="res/drawable-xhdpi/icon_arrow_left_active.jpg" />
@@ -78,6 +83,11 @@
         <resource-file src="src/android/res/drawable-mdpi/icon_arrow_right.jpg" target="res/drawable-mdpi/icon_arrow_right.jpg" />
         <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_right.jpg" target="res/drawable-xhdpi/icon_arrow_right.jpg" />
         <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_right.jpg" target="res/drawable-xxhdpi/icon_arrow_right.jpg" />
+
+        <!--yolo resource-file src="src/android/res/drawable-hdpi/icon_arrow_right_active.jpg" target="res/drawable-hdpi/icon_arrow_right_active.jpg" />
+        <resource-file src="src/android/res/drawable-mdpi/icon_arrow_right_active.jpg" target="res/drawable-mdpi/icon_arrow_right_active.jpg" />
+        <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_right_active.jpg" target="res/drawable-xhdpi/icon_arrow_right_active.jpg" />
+        <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_right_active.jpg" target="res/drawable-xxhdpi/icon_arrow_right_active.jpg" /-->
 
         <!-- <resource-file src="src/android/res/drawable-hdpi/icon_arrow_right_active.jpg" target="res/drawable-hdpi/icon_arrow_right_active.jpg" />
         <resource-file src="src/android/res/drawable-mdpi/icon_arrow_right_active.jpg" target="res/drawable-mdpi/icon_arrow_right_active.jpg" />
@@ -187,6 +197,18 @@
         <resource-file src="src/ios/icon_arrow_left@2x~ipad.jpg" target="src/ios/icon_arrow_left@2x~ipad.jpg" />
         <resource-file src="src/ios/icon_arrow_left@2x~iphone.jpg" target="src/ios/icon_arrow_left@2x~iphone.jpg" />
         <resource-file src="src/ios/icon_arrow_left@3x~iphone.jpg" target="src/ios/icon_arrow_left@3x~iphone.jpg" />
+
+        <!--resource-file src="src/ios/icon_arrow_right_active.jpg" target="src/ios/icon_arrow_right_active.jpg" /-->
+        <resource-file src="src/ios/icon_arrow_right_active@1x~ipad.jpg" target="src/ios/icon_arrow_right_active@1x~ipad.jpg" />
+        <resource-file src="src/ios/icon_arrow_right_active@2x~ipad.jpg" target="src/ios/icon_arrow_right_active@2x~ipad.jpg" />
+        <resource-file src="src/ios/icon_arrow_right_active@2x~iphone.jpg" target="src/ios/icon_arrow_right_active@2x~iphone.jpg" />
+        <resource-file src="src/ios/icon_arrow_right_active@3x~iphone.jpg" target="src/ios/icon_arrow_right_active@3x~iphone.jpg" />
+
+        <!--resource-file src="src/ios/icon_arrow_left_active.jpg" target="src/ios/icon_arrow_left_active.jpg" /-->
+        <resource-file src="src/ios/icon_arrow_left_active@1x~ipad.jpg" target="src/ios/icon_arrow_left_active@1x~ipad.jpg" />
+        <resource-file src="src/ios/icon_arrow_left_active@2x~ipad.jpg" target="src/ios/icon_arrow_left_active@2x~ipad.jpg" />
+        <resource-file src="src/ios/icon_arrow_left_active@2x~iphone.jpg" target="src/ios/icon_arrow_left_active@2x~iphone.jpg" />
+        <resource-file src="src/ios/icon_arrow_left_active@3x~iphone.jpg" target="src/ios/icon_arrow_left_active@3x~iphone.jpg" />
 	    
 	    <framework src="CoreGraphics.framework" />
     </platform>
