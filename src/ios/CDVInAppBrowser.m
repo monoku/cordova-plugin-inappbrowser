@@ -931,6 +931,18 @@
     self.addressLabel.text = NSLocalizedString(@"Loading...", nil);
     self.backButton.enabled = theWebView.canGoBack;
     self.forwardButton.enabled = theWebView.canGoForward;
+    
+    if (theWebView.canGoForward) {
+        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }else{
+        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }
+    
+    if (theWebView.canGoBack) {
+        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }else{
+        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }
 
     [self.spinner startAnimating];
 
@@ -954,6 +966,18 @@
     self.addressLabel.text = [self.currentURL absoluteString];
     self.backButton.enabled = theWebView.canGoBack;
     self.forwardButton.enabled = theWebView.canGoForward;
+    
+    if (theWebView.canGoForward) {
+        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }else{
+        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }
+    
+    if (theWebView.canGoBack) {
+        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }else{
+        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }
 
     [self.spinner stopAnimating];
 
@@ -984,6 +1008,18 @@
     self.backButton.enabled = theWebView.canGoBack;
     self.forwardButton.enabled = theWebView.canGoForward;
     [self.spinner stopAnimating];
+    
+    if (theWebView.canGoForward) {
+        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }else{
+        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }
+    
+    if (theWebView.canGoBack) {
+        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }else{
+        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }
 
     self.addressLabel.text = NSLocalizedString(@"Load Error", nil);
 
