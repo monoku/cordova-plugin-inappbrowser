@@ -44,15 +44,31 @@
             </feature>
         </config-file>
 
+        <source-file src="src/android/GifMovieView.java" target-dir="src/org/apache/cordova/inappbrowser" />
         <source-file src="src/android/InAppBrowser.java" target-dir="src/org/apache/cordova/inappbrowser" />
         <source-file src="src/android/InAppBrowserDialog.java" target-dir="src/org/apache/cordova/inappbrowser" />
         <source-file src="src/android/InAppChromeClient.java" target-dir="src/org/apache/cordova/inappbrowser" />
-
+        <source-file src="src/android/AnimatedView.java" target-dir="src/org/apache/cordova/inappbrowser" />
+        <source-file src="src/android/JavaScriptInterface.java" target-dir="src/org/apache/cordova/inappbrowser" />
+        
         <!--  drawable src/android/resources -->
         <resource-file src="src/android/res/drawable-hdpi/ic_action_next_item.png" target="res/drawable-hdpi/ic_action_next_item.png" />
         <resource-file src="src/android/res/drawable-mdpi/ic_action_next_item.png" target="res/drawable-mdpi/ic_action_next_item.png" />
         <resource-file src="src/android/res/drawable-xhdpi/ic_action_next_item.png" target="res/drawable-xhdpi/ic_action_next_item.png" />
         <resource-file src="src/android/res/drawable-xxhdpi/ic_action_next_item.png" target="res/drawable-xxhdpi/ic_action_next_item.png" />
+
+
+        <resource-file src="src/android/res/drawable-hdpi/icon_fast.jpg" target="res/drawable-hdpi/icon_fast.jpg" />
+        <resource-file src="src/android/res/drawable-mdpi/icon_fast.jpg" target="res/drawable-mdpi/icon_fast.jpg" />
+        <resource-file src="src/android/res/drawable-xhdpi/icon_fast.jpg" target="res/drawable-xhdpi/icon_fast.jpg" />
+        <resource-file src="src/android/res/drawable-xxhdpi/icon_fast.jpg" target="res/drawable-xxhdpi/icon_fast.jpg" />
+
+
+        <resource-file src="src/android/res/drawable-hdpi/loader.gif" target="res/drawable-hdpi/loader.gif" />
+        <resource-file src="src/android/res/drawable-mdpi/loader.gif" target="res/drawable-mdpi/loader.gif" />
+        <resource-file src="src/android/res/drawable-xhdpi/loader.gif" target="res/drawable-xhdpi/loader.gif" />
+        <resource-file src="src/android/res/drawable-xxhdpi/loader.gif" target="res/drawable-xxhdpi/loader.gif" />
+        <resource-file src="src/android/res/raw/loader.gif" target="res/raw/loader.gif" />
 
         <resource-file src="src/android/res/drawable-hdpi/ic_action_previous_item.png" target="res/drawable-hdpi/ic_action_previous_item.png" />
         <resource-file src="src/android/res/drawable-mdpi/ic_action_previous_item.png" target="res/drawable-mdpi/ic_action_previous_item.png" />
@@ -180,6 +196,12 @@
         <resource-file src="src/ios/icon_fav@2x~iphone.jpg" target="src/ios/icon_fav@2x~iphone.jpg" />
         <resource-file src="src/ios/icon_fav@3x~iphone.jpg" target="src/ios/icon_fav@3x~iphone.jpg" />
 
+        <!--resource-file src="src/ios/icon_fast.jpg" target="src/ios/icon_fast.jpg" /-->
+        <resource-file src="src/ios/icon_fast@1x~ipad.jpg" target="src/ios/icon_fast@1x~ipad.jpg" />
+        <resource-file src="src/ios/icon_fast@2x~ipad.jpg" target="src/ios/icon_fast@2x~ipad.jpg" />
+        <resource-file src="src/ios/icon_fast@2x~iphone.jpg" target="src/ios/icon_fast@2x~iphone.jpg" />
+        <resource-file src="src/ios/icon_fast@3x~iphone.jpg" target="src/ios/icon_fast@3x~iphone.jpg" />
+
         <!--resource-file src="src/ios/icon_close.jpg" target="src/ios/icon_close.jpg" /-->
         <resource-file src="src/ios/icon_close@1x~ipad.jpg" target="src/ios/icon_close@1x~ipad.jpg" />
         <resource-file src="src/ios/icon_close@2x~ipad.jpg" target="src/ios/icon_close@2x~ipad.jpg" />
@@ -210,6 +232,33 @@
         <resource-file src="src/ios/icon_arrow_left_active@2x~iphone.jpg" target="src/ios/icon_arrow_left_active@2x~iphone.jpg" />
         <resource-file src="src/ios/icon_arrow_left_active@3x~iphone.jpg" target="src/ios/icon_arrow_left_active@3x~iphone.jpg" />
 	    
+        <resource-file src="src/ios/loader0001.jpg" target="src/ios/loader0001.jpg"/>
+        <resource-file src="src/ios/loader0002.jpg" target="src/ios/loader0002.jpg"/>
+        <resource-file src="src/ios/loader0003.jpg" target="src/ios/loader0003.jpg"/>
+        <resource-file src="src/ios/loader0004.jpg" target="src/ios/loader0004.jpg"/>
+        <resource-file src="src/ios/loader0005.jpg" target="src/ios/loader0005.jpg"/>
+        <resource-file src="src/ios/loader0006.jpg" target="src/ios/loader0006.jpg"/>
+        <resource-file src="src/ios/loader0007.jpg" target="src/ios/loader0007.jpg"/>
+        <resource-file src="src/ios/loader0008.jpg" target="src/ios/loader0008.jpg"/>
+        <resource-file src="src/ios/loader0009.jpg" target="src/ios/loader0009.jpg"/>
+        <resource-file src="src/ios/loader0010.jpg" target="src/ios/loader0010.jpg"/>
+        <resource-file src="src/ios/loader0011.jpg" target="src/ios/loader0011.jpg"/>
+        <resource-file src="src/ios/loader0012.jpg" target="src/ios/loader0012.jpg"/>
+        <resource-file src="src/ios/loader0013.jpg" target="src/ios/loader0013.jpg"/>
+        <resource-file src="src/ios/loader0014.jpg" target="src/ios/loader0014.jpg"/>
+        <resource-file src="src/ios/loader0015.jpg" target="src/ios/loader0015.jpg"/>
+        <resource-file src="src/ios/loader0016.jpg" target="src/ios/loader0016.jpg"/>
+        <resource-file src="src/ios/loader0017.jpg" target="src/ios/loader0017.jpg"/>
+        <resource-file src="src/ios/loader0018.jpg" target="src/ios/loader0018.jpg"/>
+        <resource-file src="src/ios/loader0019.jpg" target="src/ios/loader0019.jpg"/>
+        <resource-file src="src/ios/loader0020.jpg" target="src/ios/loader0020.jpg"/>
+        <resource-file src="src/ios/loader0021.jpg" target="src/ios/loader0021.jpg"/>
+        <resource-file src="src/ios/loader0022.jpg" target="src/ios/loader0022.jpg"/>
+        <resource-file src="src/ios/loader0023.jpg" target="src/ios/loader0023.jpg"/>
+        <resource-file src="src/ios/loader0024.jpg" target="src/ios/loader0024.jpg"/>
+        <resource-file src="src/ios/loader0025.jpg" target="src/ios/loader0025.jpg"/>
+        <resource-file src="src/ios/loader0026.jpg" target="src/ios/loader0026.jpg"/>
+        <resource-file src="src/ios/loader0027.jpg" target="src/ios/loader0027.jpg"/>
 	    <framework src="CoreGraphics.framework" />
     </platform>
 

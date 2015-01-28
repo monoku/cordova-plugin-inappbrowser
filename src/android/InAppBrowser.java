@@ -18,10 +18,15 @@
 */
 package org.apache.cordova.inappbrowser;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import org.apache.cordova.inappbrowser.InAppBrowserDialog;
+import org.apache.cordova.inappbrowser.GifMovieView;
+import org.apache.cordova.inappbrowser.AnimatedView;
+import org.apache.cordova.inappbrowser.JavaScriptInterface;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -29,6 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
@@ -38,6 +44,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
@@ -47,7 +55,10 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.VideoView;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.Config;
@@ -59,8 +70,13 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class InAppBrowser extends CordovaPlugin {
@@ -81,9 +97,11 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String CLEAR_ALL_CACHE = "clearcache";
     private static final String CLEAR_SESSION_CACHE = "clearsessioncache";
     private static final String HIDE_FAV = "hidefav";
+    private static final String TEXT_MODE = "textmode";
 
     private InAppBrowserDialog dialog;
     private WebView inAppWebView;
+    private WebView textWebView;
     private EditText edittext;
     private CallbackContext callbackContext;
     private boolean showLocationBar = true;
@@ -91,6 +109,16 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean clearAllCache= false;
     private boolean clearSessionCache=false;
     private boolean hideFav = false;
+    private boolean textModeActivated = false;
+    private Button activateTextModeButton;
+    private Button fav;
+    private Button share;
+    private Button back;
+    private Button forward;
+
+    private AnimatedView fastViewContainter;
+    private Animation slide;
+    private String HTMLFastText = "";
 
     /**
      * Executes the request and returns PluginResult.
@@ -110,8 +138,11 @@ public class InAppBrowser extends CordovaPlugin {
             }
             final String target = t;
             final HashMap<String, Boolean> features = parseFeature(args.optString(2));
-            
-            Log.d(LOG_TAG, "target = " + target);
+            HTMLFastText = args.optString(3);
+            textModeActivated = false;
+
+//            int slideAnimId = cordova.getActivity().getResources().getIdentifier("slide_down.xml", "anim", cordova.getActivity().getPackageName());
+//            slide = AnimationUtils.loadAnimation(cordova.getActivity().getApplicationContext(), slideAnimId);
             
             this.cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -230,7 +261,7 @@ public class InAppBrowser extends CordovaPlugin {
     public void onDestroy() {
         closeDialog();
     }
-    
+
     /**
      * Inject an object (script or style) into the InAppBrowser WebView.
      *
@@ -248,7 +279,7 @@ public class InAppBrowser extends CordovaPlugin {
      *                    which should be executed directly.
      */
     private void injectDeferredObject(String source, String jsWrapper) {
-        String scriptToInject;
+        final String scriptToInject;
         if (jsWrapper != null) {
             org.json.JSONArray jsonEsc = new org.json.JSONArray();
             jsonEsc.put(source);
@@ -267,9 +298,12 @@ public class InAppBrowser extends CordovaPlugin {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     // This action will have the side-effect of blurring the currently focused element
                     inAppWebView.loadUrl("javascript:" + finalScriptToInject);
+                    textWebView.loadUrl("javascript:" + finalScriptToInject);
                 } else {
                     inAppWebView.evaluateJavascript(finalScriptToInject, null);
+                    textWebView.evaluateJavascript(finalScriptToInject, null);
                 }
+                Log.d(LOG_TAG, finalScriptToInject);
             }
         });
     }
@@ -373,10 +407,79 @@ public class InAppBrowser extends CordovaPlugin {
             obj.put("url", this.inAppWebView.getUrl());
             Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> SHARE");
             sendUpdate(obj, true);
-            closeDialog();
 //            injectDeferredObject("try{window.cordovaInappBrowserShareCallBack();}catch(e){}", null);
         } catch (JSONException ex) {
             Log.d(LOG_TAG, "Should never happen SHARE");
+        }
+    }
+
+    public void showAllButtons(){
+        fav.setVisibility(View.VISIBLE);
+        share.setVisibility(View.VISIBLE);
+        if( !textModeActivated ) {
+            back.setVisibility(View.VISIBLE);
+            forward.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Activates TextMode
+     */
+    public void textMode(){
+        try {
+            textModeActivated = true;
+            activateTextModeButton.setAlpha(0.7f);
+            activateTextModeButton.setEnabled(false);
+            inAppWebView.stopLoading();
+            textWebView.setVisibility(View.VISIBLE);
+            inAppWebView.setVisibility(View.GONE);
+//            fastViewContainter.setVisibility(View.GONE);
+
+            ValueAnimator va = ValueAnimator.ofInt(fastViewContainter.getHeight(), 0);
+            va.setDuration(250);
+            va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Integer value = (Integer) animation.getAnimatedValue();
+                    Log.d(LOG_TAG, "animating: "+value);
+                    fastViewContainter.getLayoutParams().height = value.intValue();
+//                    fastViewContainter.setTranslationY(-value.intValue());
+//                    fastViewContainter.requestLayout();
+                    fastViewContainter.requestLayout();
+                }
+            });
+            va.start();
+
+            showAllButtons();
+
+            WebSettings webSettings = inAppWebView.getSettings();
+            webSettings.setJavaScriptEnabled(false);
+//            inAppWebView.destroy();
+//            inAppWebView.loadDataWithBaseURL(null, null, "text/html", "utf-8", null);
+//            fastViewContainter.getLayoutParams().height = 250;
+            Log.d(LOG_TAG, "=====TEXTMODE");
+            JSONObject obj = new JSONObject();
+            obj.put("type", TEXT_MODE);
+            Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> TEXT MODE");
+            sendUpdate(obj, true);
+        } catch (JSONException ex) {
+            Log.d(LOG_TAG, "Should never happen TEXTMODE");
+        } finally {
+//            fastViewContainter.setVisibility(LinearLayout.GONE);
+//            fastViewContainter.startAnimation(slide);
+//            ValueAnimator va = ValueAnimator.ofInt(0, fastViewContainter.getMeasuredHeight());
+//            va.setDuration(800);
+//            va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                public void onAnimationUpdate(ValueAnimator animation) {
+//                    Integer value = (Integer) animation.getAnimatedValue();
+//                    fastViewContainter.getLayoutParams().height = value.intValue();
+////                    fastViewContainter.setTranslationY(-value.intValue());
+////                    fastViewContainter.requestLayout();
+//                    fastViewContainter.requestLayout();
+//                }
+//            });
+//            this.inAppWebView.setAlpha(1);
+//            injectDeferredObject("try{document.querySelector('html').style.display='block';}catch(e){}", null);
+
         }
     }
 
@@ -502,8 +605,8 @@ public class InAppBrowser extends CordovaPlugin {
                 // Let's create the main dialog
                 dialog = new InAppBrowserDialog(cordova.getActivity(), android.R.style.Theme_NoTitleBar);
                 dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
-                dialog. getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                dialog. getWindow().setFlags(LayoutParams.FLAG_FULLSCREEN,
+                        LayoutParams.FLAG_FULLSCREEN);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
                 dialog.setInAppBroswer(getInAppBrowser());
@@ -536,16 +639,18 @@ public class InAppBrowser extends CordovaPlugin {
                 secondButtonContainer.setId(8);
 
                 // Back button
-                Button back = new Button(cordova.getActivity());
+                back = new Button(cordova.getActivity());
                 RelativeLayout.LayoutParams backLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 backLayoutParams.addRule(RelativeLayout.ALIGN_LEFT);
                 back.setLayoutParams(backLayoutParams);
+//                back.setWidth(this.dpToPixels(100));
                 back.setContentDescription("Back Button");
                 back.setId(2);
+                back.setVisibility(View.GONE);
                 Resources activityRes = cordova.getActivity().getResources();
                 int backResId = activityRes.getIdentifier("icon_arrow_left", "drawable", cordova.getActivity().getPackageName());
                 Drawable backIcon = activityRes.getDrawable(backResId);
-                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
                 {
                     back.setBackgroundDrawable(backIcon);
                 }
@@ -560,16 +665,17 @@ public class InAppBrowser extends CordovaPlugin {
                 });
 
                 // Forward button
-                Button forward = new Button(cordova.getActivity());
+                forward = new Button(cordova.getActivity());
                 RelativeLayout.LayoutParams forwardLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                forwardLayoutParams.setMargins(this.dpToPixels(20), 0, 0, 0);
-                forwardLayoutParams.addRule(RelativeLayout.RIGHT_OF, 2);
+                forwardLayoutParams.setMargins(this.dpToPixels(65), 0, 0, 0);
+                forwardLayoutParams.addRule(RelativeLayout.ALIGN_LEFT);
                 forward.setLayoutParams(forwardLayoutParams);
                 forward.setContentDescription("Forward Button");
                 forward.setId(3);
+                forward.setVisibility(View.GONE);
                 int fwdResId = activityRes.getIdentifier("icon_arrow_right", "drawable", cordova.getActivity().getPackageName());
                 Drawable fwdIcon = activityRes.getDrawable(fwdResId);
-                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
                 {
                     forward.setBackgroundDrawable(fwdIcon);
                 }
@@ -615,7 +721,7 @@ public class InAppBrowser extends CordovaPlugin {
                 close.setId(5);
                 int closeResId = activityRes.getIdentifier("icon_close", "drawable", cordova.getActivity().getPackageName());
                 Drawable closeIcon = activityRes.getDrawable(closeResId);
-                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
                 {
                     close.setBackgroundDrawable(closeIcon);
                 }
@@ -630,16 +736,17 @@ public class InAppBrowser extends CordovaPlugin {
                 });
 
                 // Fav button
-                Button fav = new Button(cordova.getActivity());
+                fav = new Button(cordova.getActivity());
                 RelativeLayout.LayoutParams favLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 favLayoutParams.addRule(RelativeLayout.LEFT_OF, 5);
                 favLayoutParams.setMargins(0, 0, this.dpToPixels(12), 0);
                 fav.setLayoutParams(favLayoutParams);
                 fav.setContentDescription("Fav Button");
                 fav.setId(9);
+                fav.setVisibility(View.GONE);
                 int favResId = activityRes.getIdentifier("icon_fav", "drawable", cordova.getActivity().getPackageName());
                 Drawable favIcon = activityRes.getDrawable(favResId);
-                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
                 {
                     fav.setBackgroundDrawable(favIcon);
                 }
@@ -654,16 +761,17 @@ public class InAppBrowser extends CordovaPlugin {
                 });
 
                 // Share button
-                Button share = new Button(cordova.getActivity());
+                share = new Button(cordova.getActivity());
                 RelativeLayout.LayoutParams shareLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 shareLayoutParams.addRule(RelativeLayout.LEFT_OF, 9);
                 shareLayoutParams.setMargins(0, 0, this.dpToPixels(10), 0);
                 share.setLayoutParams(shareLayoutParams);
-                forward.setContentDescription("Share Button");
+                share.setContentDescription("Share Button");
                 share.setId(10);
+                share.setVisibility(View.GONE);
                 int shareResId = activityRes.getIdentifier("icon_share", "drawable", cordova.getActivity().getPackageName());
                 Drawable shareIcon = activityRes.getDrawable(shareResId);
-                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
                 {
                     share.setBackgroundDrawable(shareIcon);
                 }
@@ -677,17 +785,103 @@ public class InAppBrowser extends CordovaPlugin {
                     }
                 });
 
+
+                // *********************************
+                // ****** FAST VIEW
+                // *********************************
+
+                fastViewContainter = new AnimatedView(cordova.getActivity());
+                fastViewContainter.setOrientation(LinearLayout.VERTICAL);
+                fastViewContainter.setBackgroundColor(Color.parseColor("#f0f0f0"));
+                fastViewContainter.setGravity(Gravity.CENTER_HORIZONTAL);
+//                fastViewContainter.setLayoutMode(View.);
+                RelativeLayout.LayoutParams fastViewContainterParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+                activateTextModeButton = new Button(cordova.getActivity());
+                RelativeLayout.LayoutParams activateTextModeButtonParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                activateTextModeButtonParams.addRule(RelativeLayout.ALIGN_LEFT);
+                activateTextModeButton.setLayoutParams(activateTextModeButtonParams);
+                activateTextModeButton.setContentDescription("Fast Preview");
+                LinearLayout.LayoutParams fvlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                fvlp.setMargins(0, 180, 0, 0);
+                activateTextModeButton.setLayoutParams(fvlp);
+                back.setId(20);
+                int fastResId = activityRes.getIdentifier("icon_fast", "drawable", cordova.getActivity().getPackageName());
+                Drawable fastIcon = activityRes.getDrawable(fastResId);
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+                {
+                    activateTextModeButton.setBackgroundDrawable(fastIcon);
+                }
+                else
+                {
+                    activateTextModeButton.setBackground(fastIcon);
+                }
+                activateTextModeButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        textMode();
+                    }
+                });
+                fastViewContainter.addView(activateTextModeButton);
+
+                TextView fastText = new TextView(cordova.getActivity());
+                fastText.setText("Tap Fast View to see content faster.");
+                fastText.setTextColor(Color.parseColor("#004251"));
+                fastText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+                fastText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                fastText.setGravity(Gravity.CENTER);
+                LinearLayout.LayoutParams ftlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                ftlp.setMargins(0, 0, 0, 20);
+                fastText.setLayoutParams(ftlp);
+                fastViewContainter.addView(fastText);
+
+//                WebView wView = new WebView(cordova.getActivity().getApplicationContext());
+//                wView.loadUrl("file://android_asset/loader.gif");
+//                fastViewContainter.addView(wView);
+//                VideoView gifView = new VideoView(cordova.getActivity().getApplicationContext());
+//                gifView.setVideoPath("android.resource://org.apache.cordova.inappbrowser/loader.gif");
+//                fastViewContainter.addView(gifView);
+//                AssetManager assetManager = cordova.getActivity().getApplicationContext().getAssets();
+                InputStream stream = null;
+                try {
+                    int loaderResId = activityRes.getIdentifier("loader", "raw", cordova.getActivity().getPackageName());
+                    stream = cordova.getActivity().getApplicationContext().getResources().openRawResource(loaderResId);
+                    Log.d(LOG_TAG, String.valueOf(stream));
+                }catch( Exception e ){
+                    e.printStackTrace();
+                }
+                GifMovieView gifView = new GifMovieView(cordova.getActivity().getApplicationContext(), stream);
+                gifView.setLayoutParams(new LayoutParams(19*4, 31*4));
+                fastViewContainter.addView(gifView);
+
+
+
                 // WebView
                 inAppWebView = new WebView(cordova.getActivity());
+                textWebView = new WebView(cordova.getActivity());
                 inAppWebView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                inAppWebView.setWebChromeClient(new InAppChromeClient(thatWebView));
+                textWebView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                inAppWebView.setWebChromeClient(new org.apache.cordova.inappbrowser.InAppChromeClient(thatWebView));
+                textWebView.setWebChromeClient(new org.apache.cordova.inappbrowser.InAppChromeClient(thatWebView));
                 WebViewClient client = new InAppBrowserClient(thatWebView, edittext);
                 inAppWebView.setWebViewClient(client);
+                inAppWebView.setVisibility(View.INVISIBLE);
+                textWebView.setVisibility(View.INVISIBLE);
+
                 WebSettings settings = inAppWebView.getSettings();
                 settings.setJavaScriptEnabled(true);
+//                JavaScriptInterface jsInterface = new JavaScriptInterface(cordova.getActivity(), inAppWebView, fastViewContainter);
+//                inAppWebView.addJavascriptInterface(jsInterface, "JSInterface");
                 settings.setJavaScriptCanOpenWindowsAutomatically(true);
                 settings.setBuiltInZoomControls(true);
-                settings.setPluginState(android.webkit.WebSettings.PluginState.ON);
+                settings.setPluginState(WebSettings.PluginState.ON);
+
+                WebSettings textsettings = textWebView.getSettings();
+                textsettings.setJavaScriptEnabled(true);
+//                JavaScriptInterface jsInterface = new JavaScriptInterface(cordova.getActivity(), inAppWebView, fastViewContainter);
+//                inAppWebView.addJavascriptInterface(jsInterface, "JSInterface");
+                textsettings.setJavaScriptCanOpenWindowsAutomatically(true);
+                textsettings.setBuiltInZoomControls(true);
+                textsettings.setPluginState(WebSettings.PluginState.ON);
 
                 //Toggle whether this is enabled or not!
                 Bundle appSettings = cordova.getActivity().getIntent().getExtras();
@@ -705,12 +899,18 @@ public class InAppBrowser extends CordovaPlugin {
                     CookieManager.getInstance().removeSessionCookie();
                 }
 
+                String mime = "text/html";
+                String encoding = "utf-8";
+
                 inAppWebView.loadUrl(url);
+                textWebView.loadDataWithBaseURL(null, HTMLFastText, mime, encoding, null);
                 inAppWebView.setId(6);
                 inAppWebView.getSettings().setLoadWithOverviewMode(true);
                 inAppWebView.getSettings().setUseWideViewPort(true);
                 inAppWebView.requestFocus();
                 inAppWebView.requestFocusFromTouch();
+                textWebView.requestFocus();
+                textWebView.requestFocusFromTouch();
 
                 // Add the back and forward buttons to our action button container layout
                 actionButtonContainer.addView(back);
@@ -735,13 +935,18 @@ public class InAppBrowser extends CordovaPlugin {
                     main.addView(toolbar);
                 }
 
+                // Add Fast View
+//                LayoutParams  params = new WindowManager.LayoutParams(0, 0);
+                main.addView(fastViewContainter, fastViewContainterParams);
+
                 // Add our webview to our main view/layout
                 main.addView(inAppWebView);
+                main.addView(textWebView);
 
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                LayoutParams lp = new LayoutParams();
                 lp.copyFrom(dialog.getWindow().getAttributes());
-                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.width = LayoutParams.MATCH_PARENT;
+                lp.height = LayoutParams.MATCH_PARENT;
 
                 dialog.setContentView(main);
                 dialog.show();
@@ -879,7 +1084,7 @@ public class InAppBrowser extends CordovaPlugin {
                 JSONObject obj = new JSONObject();
                 obj.put("type", LOAD_START_EVENT);
                 obj.put("url", newloc);
-    
+//                injectDeferredObject("try{document.querySelector('html').style.display='none !important';}catch(e){}", null);
                 sendUpdate(obj, true);
             } catch (JSONException ex) {
                 Log.d(LOG_TAG, "Should never happen");
@@ -888,12 +1093,45 @@ public class InAppBrowser extends CordovaPlugin {
         
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+
+            Log.d(LOG_TAG, url);
+            Log.d(LOG_TAG, String.valueOf(!textModeActivated));
+            Log.d(LOG_TAG,"LA URL!!!");
+
+            showAllButtons();
+
+            if( url != null && !url.equals("") && !url.equals("about:blank") ) {
+                if( !textModeActivated ) {
+//                    fastViewContainter.setVisibility(View.GONE);
+                    inAppWebView.setVisibility(View.VISIBLE);
+                    WebSettings webSettings = textWebView.getSettings();
+                    webSettings.setJavaScriptEnabled(false);
+                    ValueAnimator va = ValueAnimator.ofInt(fastViewContainter.getHeight(), 0);
+                    va.setDuration(250);
+                    va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            Integer value = (Integer) animation.getAnimatedValue();
+                            Log.d(LOG_TAG, "animating: "+value);
+                            fastViewContainter.getLayoutParams().height = value.intValue();
+//                    fastViewContainter.setTranslationY(-value.intValue());
+//                    fastViewContainter.requestLayout();
+                            fastViewContainter.requestLayout();
+                        }
+                    });
+                    va.start();
+//                    textWebView.loadDataWithBaseURL(null, null, "text/html", "utf-8", null);
+                }else{
+                    WebSettings webSettings = inAppWebView.getSettings();
+                    webSettings.setJavaScriptEnabled(false);
+//                    inAppWebView.loadDataWithBaseURL(null, null, "text/html", "utf-8", null);
+                }
+            }
             
             try {
                 JSONObject obj = new JSONObject();
                 obj.put("type", LOAD_STOP_EVENT);
                 obj.put("url", url);
-    
+//                injectDeferredObject("try{document.querySelector('html').style.display='block';}catch(e){}", null);
                 sendUpdate(obj, true);
             } catch (JSONException ex) {
                 Log.d(LOG_TAG, "Should never happen");
