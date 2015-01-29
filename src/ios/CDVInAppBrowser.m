@@ -536,7 +536,7 @@
     self.webView.backgroundColor = [UIColor whiteColor];
     
     self.textWebView.delegate = _webViewDelegate;
-    self.textWebView.backgroundColor = [UIColor redColor];
+    self.textWebView.backgroundColor = [UIColor whiteColor];
     
     self.webView.clearsContextBeforeDrawing = YES;
     self.webView.clipsToBounds = YES;
