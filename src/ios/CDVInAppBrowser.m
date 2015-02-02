@@ -654,41 +654,41 @@
 //    loader.animationRepeatCount = 0;
 //    [loader startAnimating];
     NSArray *animationFrames = [NSArray arrayWithObjects:
-                                [UIImage imageNamed:@"loader0001.jpg"],
-                                [UIImage imageNamed:@"loader0002.jpg"],
-                                [UIImage imageNamed:@"loader0003.jpg"],
-                                [UIImage imageNamed:@"loader0004.jpg"],
-                                [UIImage imageNamed:@"loader0005.jpg"],
-                                [UIImage imageNamed:@"loader0006.jpg"],
-                                [UIImage imageNamed:@"loader0007.jpg"],
-                                [UIImage imageNamed:@"loader0008.jpg"],
-                                [UIImage imageNamed:@"loader0009.jpg"],
-                                [UIImage imageNamed:@"loader0010.jpg"],
-                                [UIImage imageNamed:@"loader0011.jpg"],
-                                [UIImage imageNamed:@"loader0012.jpg"],
-                                [UIImage imageNamed:@"loader0013.jpg"],
-                                [UIImage imageNamed:@"loader0014.jpg"],
-                                [UIImage imageNamed:@"loader0015.jpg"],
-                                [UIImage imageNamed:@"loader0016.jpg"],
-                                [UIImage imageNamed:@"loader0017.jpg"],
-                                [UIImage imageNamed:@"loader0018.jpg"],
-                                [UIImage imageNamed:@"loader0019.jpg"],
-                                [UIImage imageNamed:@"loader0020.jpg"],
-                                [UIImage imageNamed:@"loader0021.jpg"],
-                                [UIImage imageNamed:@"loader0022.jpg"],
-                                [UIImage imageNamed:@"loader0023.jpg"],
-                                [UIImage imageNamed:@"loader0024.jpg"],
-                                [UIImage imageNamed:@"loader0025.jpg"],
-                                [UIImage imageNamed:@"loader0026.jpg"],
-                                [UIImage imageNamed:@"loader0027.jpg"],
+                                [UIImage imageNamed:@"loader_x30001.png"],
+                                [UIImage imageNamed:@"loader_x30002.png"],
+                                [UIImage imageNamed:@"loader_x30003.png"],
+                                [UIImage imageNamed:@"loader_x30004.png"],
+                                [UIImage imageNamed:@"loader_x30005.png"],
+                                [UIImage imageNamed:@"loader_x30006.png"],
+                                [UIImage imageNamed:@"loader_x30007.png"],
+                                [UIImage imageNamed:@"loader_x30008.png"],
+                                [UIImage imageNamed:@"loader_x30009.png"],
+                                [UIImage imageNamed:@"loader_x30010.png"],
+                                [UIImage imageNamed:@"loader_x30011.png"],
+                                [UIImage imageNamed:@"loader_x30012.png"],
+                                [UIImage imageNamed:@"loader_x30013.png"],
+                                [UIImage imageNamed:@"loader_x30014.png"],
+                                [UIImage imageNamed:@"loader_x30015.png"],
+                                [UIImage imageNamed:@"loader_x30016.png"],
+                                [UIImage imageNamed:@"loader_x30017.png"],
+                                [UIImage imageNamed:@"loader_x30018.png"],
+                                [UIImage imageNamed:@"loader_x30019.png"],
+                                [UIImage imageNamed:@"loader_x30020.png"],
+                                [UIImage imageNamed:@"loader_x30021.png"],
+                                [UIImage imageNamed:@"loader_x30022.png"],
+                                [UIImage imageNamed:@"loader_x30023.png"],
+                                [UIImage imageNamed:@"loader_x30024.png"],
+                                [UIImage imageNamed:@"loader_x30025.png"],
+                                [UIImage imageNamed:@"loader_x30026.png"],
+                                [UIImage imageNamed:@"loader_x30027.png"],
                                 nil];
     
     UIImageView *loader = [[UIImageView alloc] init];
     loader.animationImages = animationFrames;
-    loader.animationDuration = 1.75;
+    loader.animationDuration = 1.2;
     loader.animationRepeatCount = 0;
     [loader startAnimating];
-    loader.frame= CGRectMake(self.view.bounds.size.width/2-19/2, 220, 19, 31);
+    loader.frame= CGRectMake(self.view.bounds.size.width/2-23/2, 220, 23, 33);
     
     UILabel *fastText = [[UILabel alloc] initWithFrame:CGRectMake(0, 180, self.view.bounds.size.width, 40)];
     fastText.adjustsFontSizeToFitWidth = NO;
