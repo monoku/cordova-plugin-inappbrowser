@@ -92,6 +92,7 @@
 @property (nonatomic) NSURL* currentURL;
 
 @property (nonatomic, assign) BOOL textModeActivated;
+@property (nonatomic, assign) BOOL didInit;
 
 - (void)close;
 - (void)navigateTo:(NSURL*)url HTMLFastText:(NSString*)HTMLFastText;

@@ -800,46 +800,50 @@
 }
 
 -(void) showAllButtons {
-    UIBarButtonItem* flexibleSpaceButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    UIBarButtonItem* negativeSpacer = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                       target:nil action:nil];
-    negativeSpacer.width = -5;
-    
-    
-    UIBarButtonItem* negativeSpacerLarge = [[UIBarButtonItem alloc]
-                                            initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                            target:nil action:nil];
-    negativeSpacerLarge.width = -10;
-    
-    UIBarButtonItem* fixedSpaceButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixedSpaceButton.width = 4;
-    
-    if (_browserOptions.hidefav != nil) {
-        if (self.textModeActivated) {
-            [self.toolbar setItems:@[negativeSpacerLarge, flexibleSpaceButton, self.shareButton, fixedSpaceButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+    if( !self.didInit ){
+        UIBarButtonItem* flexibleSpaceButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        
+        UIBarButtonItem* negativeSpacer = [[UIBarButtonItem alloc]
+                                           initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                           target:nil action:nil];
+        negativeSpacer.width = -5;
+        
+        
+        UIBarButtonItem* negativeSpacerLarge = [[UIBarButtonItem alloc]
+                                                initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                target:nil action:nil];
+        negativeSpacerLarge.width = -10;
+        
+        UIBarButtonItem* fixedSpaceButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        fixedSpaceButton.width = 4;
+
+        
+        if (_browserOptions.hidefav != nil) {
+            if (self.textModeActivated) {
+                [self.toolbar setItems:@[negativeSpacerLarge, flexibleSpaceButton, self.shareButton, fixedSpaceButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+            }else{
+                [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+            }
         }else{
-            [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+            if (self.textModeActivated) {
+                [self.toolbar setItems:@[negativeSpacerLarge, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+            }else{
+                [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+            }
         }
-    }else{
-        if (self.textModeActivated) {
-            [self.toolbar setItems:@[negativeSpacerLarge, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
-        }else{
-            [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
-        }
+        
+        NSInteger height = self.toolbarText.frame.size.height;    
+        [UIView animateWithDuration:0.25 animations:^{
+            [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.webView.frame.size.width, self.webView.frame.size.height)];
+            [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
+            [self.toolbarText setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, 0)];
+        } completion:^(BOOL finished) {
+            [self.toolbarText setHidden:YES];
+            [self.toolbarText removeFromSuperview];
+        }];
     }
-    
-    NSInteger height = self.toolbarText.frame.size.height;
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.webView.frame.size.width, self.webView.frame.size.height)];
-        [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
-        [self.toolbarText setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, 0)];
-    } completion:^(BOOL finished) {
-        [self.toolbarText setHidden:YES];
-        [self.toolbarText removeFromSuperview];
-    }];
+
+    self.didInit = YES;
 }
 
 - (void) setWebViewFrame : (CGRect) frame {
@@ -1042,7 +1046,11 @@
         
         [self.navigationDelegate.commandDelegate sendPluginResult:pluginResult callbackId:self.navigationDelegate.callbackId];
         
-        [self showAllButtons];
+        if( !self.didInit ){
+            [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.textWebView.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
+            [self showAllButtons];
+        }
+        
         [self.webView removeFromSuperview];
         [self.webView loadHTMLString:nil baseURL:nil];
         [self.textWebView setHidden:NO];
@@ -1123,8 +1131,8 @@
 
 - (void) rePositionViews {
     if ([_browserOptions.toolbarposition isEqualToString:kInAppBrowserToolbarBarPositionTop]) {
-        [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.webView.frame.size.height, self.webView.frame.size.width, self.webView.frame.size.height)];
-        [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.textWebView.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
+        [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.webView.frame.size.width, self.webView.frame.size.height)];
+        [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
         [self.toolbar setFrame:CGRectMake(self.toolbar.frame.origin.x, [self getStatusBarOffset], self.toolbar.frame.size.width, self.toolbar.frame.size.height)];
         [self.toolbarText setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbarText.frame.size.height, self.toolbarText.frame.size.width, self.webView.frame.size.height)];
     }
@@ -1184,7 +1192,10 @@
         [self.webView loadHTMLString:nil baseURL:nil];
     }
     
-    [self showAllButtons];
+    if( !self.didInit ){
+        [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.webView.frame.size.height , self.webView.frame.size.width, self.webView.frame.size.height)];
+        [self showAllButtons];
+    }
     
     if (theWebView.canGoForward) {
         self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
