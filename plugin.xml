@@ -85,10 +85,10 @@
         <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_left.jpg" target="res/drawable-xhdpi/icon_arrow_left.jpg" />
         <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_left.jpg" target="res/drawable-xxhdpi/icon_arrow_left.jpg" />
 
-        <!--yolo resource-file src="src/android/res/drawable-hdpi/icon_arrow_left_active.jpg" target="res/drawable-hdpi/icon_arrow_left_active.jpg" />
+        <resource-file src="src/android/res/drawable-hdpi/icon_arrow_left_active.jpg" target="res/drawable-hdpi/icon_arrow_left_active.jpg" />
         <resource-file src="src/android/res/drawable-mdpi/icon_arrow_left_active.jpg" target="res/drawable-mdpi/icon_arrow_left_active.jpg" />
         <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_left_active.jpg" target="res/drawable-xhdpi/icon_arrow_left_active.jpg" />
-        <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_left_active.jpg" target="res/drawable-xxhdpi/icon_arrow_left_active.jpg" /-->
+        <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_left_active.jpg" target="res/drawable-xxhdpi/icon_arrow_left_active.jpg" />
 
         <!-- <resource-file src="src/android/res/drawable-hdpi/icon_arrow_left_active.jpg" target="res/drawable-hdpi/icon_arrow_left_active.jpg" />
         <resource-file src="src/android/res/drawable-mdpi/icon_arrow_left_active.jpg" target="res/drawable-mdpi/icon_arrow_left_active.jpg" />
@@ -100,10 +100,10 @@
         <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_right.jpg" target="res/drawable-xhdpi/icon_arrow_right.jpg" />
         <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_right.jpg" target="res/drawable-xxhdpi/icon_arrow_right.jpg" />
 
-        <!--yolo resource-file src="src/android/res/drawable-hdpi/icon_arrow_right_active.jpg" target="res/drawable-hdpi/icon_arrow_right_active.jpg" />
+        <resource-file src="src/android/res/drawable-hdpi/icon_arrow_right_active.jpg" target="res/drawable-hdpi/icon_arrow_right_active.jpg" />
         <resource-file src="src/android/res/drawable-mdpi/icon_arrow_right_active.jpg" target="res/drawable-mdpi/icon_arrow_right_active.jpg" />
         <resource-file src="src/android/res/drawable-xhdpi/icon_arrow_right_active.jpg" target="res/drawable-xhdpi/icon_arrow_right_active.jpg" />
-        <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_right_active.jpg" target="res/drawable-xxhdpi/icon_arrow_right_active.jpg" /-->
+        <resource-file src="src/android/res/drawable-xxhdpi/icon_arrow_right_active.jpg" target="res/drawable-xxhdpi/icon_arrow_right_active.jpg" />
 
         <!-- <resource-file src="src/android/res/drawable-hdpi/icon_arrow_right_active.jpg" target="res/drawable-hdpi/icon_arrow_right_active.jpg" />
         <resource-file src="src/android/res/drawable-mdpi/icon_arrow_right_active.jpg" target="res/drawable-mdpi/icon_arrow_right_active.jpg" />
