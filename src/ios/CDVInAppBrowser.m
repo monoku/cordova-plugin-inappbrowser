@@ -571,18 +571,18 @@
     self.textWebView.userInteractionEnabled = YES;
 
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.spinner.alpha = 1.000;
-    self.spinner.autoresizesSubviews = YES;
-    self.spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
-    self.spinner.clearsContextBeforeDrawing = NO;
-    self.spinner.clipsToBounds = NO;
-    self.spinner.contentMode = UIViewContentModeScaleToFill;
-    self.spinner.frame = CGRectMake(454.0, 231.0, 20.0, 20.0);
+//    self.spinner.alpha = 1.000;
+//    self.spinner.autoresizesSubviews = YES;
+//    self.spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
+//    self.spinner.clearsContextBeforeDrawing = NO;
+//    self.spinner.clipsToBounds = NO;
+ //   self.spinner.contentMode = UIViewContentModeScaleToFill;
+    self.spinner.frame = CGRectMake(self.view.frame.size.width / 2 - 10, self.view.frame.size.height/ 2 - 10, 20.0, 20.0);
     self.spinner.hidden = YES;
     self.spinner.hidesWhenStopped = YES;
-    self.spinner.multipleTouchEnabled = NO;
-    self.spinner.opaque = NO;
-    self.spinner.userInteractionEnabled = NO;
+    //self.spinner.multipleTouchEnabled = NO;
+    //self.spinner.opaque = NO;
+    //self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
     
     NSString *pathC = @"icon_close.jpg";
@@ -785,9 +785,9 @@
     
     [self.view addSubview:self.toolbar];
     [self.view addSubview:self.addressLabel];
-    [self.view addSubview:self.spinner];
     
     [self.view addSubview:self.webView];
+    [self.view addSubview:self.spinner];
     [self.view addSubview:self.toolbarText];
     [self.view addSubview:self.textWebView];
 
@@ -1150,73 +1150,83 @@
     
     NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval: 10.0];
     
-    //urlData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
-    {
-        if ([data length] > 0 && error == nil){
-            if (_userAgentLockToken != 0) {
-                NSString *htmlString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                [self.webView loadHTMLString:htmlString baseURL:url];
-            }
-            else{
-                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
-                    _userAgentLockToken = lockToken;
-                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
-                    NSString *htmlString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                    NSLog(@"======================htmll=============================");
-                    [self.webView loadHTMLString:htmlString baseURL:url];
-                }];
-            }
-        }
-        else if ([data length] == 0 && error == nil){
-            if (_userAgentLockToken != 0) {
-                if(networkStatus != NotReachable){
-                    [self.webView loadRequest:request];
-                }
-                else{
-                    [self webViewTextMode];
-                }
-            }
-            else{
-                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
-                    _userAgentLockToken = lockToken;
-                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
-                    if(networkStatus != NotReachable){
-                        [self.webView loadRequest:request];
-                    }
-                    else{
-                        [self webViewTextMode];
-                    }
-                }];
-            }
-        }
-        else if (error != nil && error.code ){
-            if (_userAgentLockToken != 0) {
-                if(networkStatus != NotReachable){
-                    [self.webView loadRequest:request];
-                }
-                else{
-                    [self webViewTextMode];
-                }
-            }
-            else{
-                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
-                    _userAgentLockToken = lockToken;
-                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
-                    if(networkStatus != NotReachable){
-                        [self.webView loadRequest:request];
-                    }
-                    else{
-                        [self webViewTextMode];
-                    }
-                }];
-            }
-        }
-        else if (error != nil){
-            [self webViewTextMode];
-        }
-    }];
+    if (_userAgentLockToken != 0) {
+        [self.webView loadRequest:request];
+    }
+    else{
+        [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
+            _userAgentLockToken = lockToken;
+            [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
+            [self.webView loadRequest:request];
+        }];
+    }
+
+//    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+//    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+//    {
+//        if ([data length] > 0 && error == nil){
+//            if (_userAgentLockToken != 0) {
+//                NSString *htmlString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//                [self.webView loadHTMLString:htmlString baseURL:url];
+//            }
+//            else{
+//                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
+//                    _userAgentLockToken = lockToken;
+//                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
+//                    NSString *htmlString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//                    NSLog(@"======================htmll=============================");
+//                    [self.webView loadHTMLString:htmlString baseURL:url];
+//                }];
+//            }
+//        }
+//        else if ([data length] == 0 && error == nil){
+//            if (_userAgentLockToken != 0) {
+//                if(networkStatus != NotReachable){
+//                    [self.webView loadRequest:request];
+//                }
+//                else{
+//                    [self webViewTextMode];
+//                }
+//            }
+//            else{
+//                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
+//                    _userAgentLockToken = lockToken;
+//                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
+//                    if(networkStatus != NotReachable){
+//                        [self.webView loadRequest:request];
+//                    }
+//                    else{
+//                        [self webViewTextMode];
+//                    }
+//                }];
+//            }
+//        }
+//        else if (error != nil && error.code ){
+//            if (_userAgentLockToken != 0) {
+//                if(networkStatus != NotReachable){
+//                    [self.webView loadRequest:request];
+//                }
+//                else{
+//                    [self webViewTextMode];
+//                }
+//            }
+//            else{
+//                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
+//                    _userAgentLockToken = lockToken;
+//                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
+//                    if(networkStatus != NotReachable){
+//                        [self.webView loadRequest:request];
+//                    }
+//                    else{
+//                        [self webViewTextMode];
+//                    }
+//                }];
+//            }
+//        }
+//        else if (error != nil){
+//            [self webViewTextMode];
+//        }
+//    }];
 }
 
 - (void)goBack:(id)sender
@@ -1257,7 +1267,7 @@
     // loading url, start spinner, update back/forward
 
     NSLog(@"=======now================");
-    [NSTimer scheduledTimerWithTimeInterval:1.0
+    [NSTimer scheduledTimerWithTimeInterval:1.5
                                      target:self
                                    selector:@selector(showWebView)
                                    userInfo:nil
