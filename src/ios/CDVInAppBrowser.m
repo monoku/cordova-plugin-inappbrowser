@@ -21,6 +21,7 @@
 #import <Cordova/CDVPluginResult.h>
 #import <Cordova/CDVUserAgentUtil.h>
 #import <Cordova/CDVJSON.h>
+#import "CDVReachability.h"
 
 #define    kInAppBrowserTargetSelf @"_self"
 #define    kInAppBrowserTargetSystem @"_system"
@@ -70,11 +71,11 @@
 
 - (BOOL) isSystemUrl:(NSURL*)url
 {
-	if ([[url host] isEqualToString:@"itunes.apple.com"]) {
-		return YES;
-	}
+    if ([[url host] isEqualToString:@"itunes.apple.com"]) {
+        return YES;
+    }
 
-	return NO;
+    return NO;
 }
 
 - (void)open:(CDVInvokedUrlCommand*)command
@@ -98,14 +99,18 @@
 //        [self.webView loadHTMLString:HTMLFastText baseURL:nil];
 //        [self.inAppBrowserViewController.textWebView loadData:HTMLFastText MIMEType: @"text/html" textEncodingName: @"UTF-8" baseURL:nil];
         if ([self isSystemUrl:absoluteUrl]) {
+            NSLog(@"-------------------isSystemUrl--------------------------");
             target = kInAppBrowserTargetSystem;
         }
 
         if ([target isEqualToString:kInAppBrowserTargetSelf]) {
+            NSLog(@"-------------------kInAppBrowserTargetSelf--------------------------");
             [self openInCordovaWebView:absoluteUrl withOptions:options HTMLFastText:HTMLFastText];
         } else if ([target isEqualToString:kInAppBrowserTargetSystem]) {
+             NSLog(@"-------------------kInAppBrowserTargetSystem--------------------------");
             [self openInSystem:absoluteUrl];
         } else { // _blank or anything else
+            NSLog(@"-------------------blank--------------------------");
             [self openInInAppBrowser:absoluteUrl withOptions:options HTMLFastText:HTMLFastText];
         }
 
@@ -116,11 +121,14 @@
 
     [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+     NSLog(@"-------------------opeeeeeen--------------------------");
 }
 
 - (void)openInInAppBrowser:(NSURL*)url withOptions:(NSString*)options HTMLFastText:(NSString*)HTMLFastText
 {
     CDVInAppBrowserOptions* browserOptions = [CDVInAppBrowserOptions parseOptions:options];
+    
+     NSLog(@"-------------------opeeeeeenInnnnnn Appppp Browseeeer--------------------------");
 
     if (browserOptions.clearcache) {
         NSHTTPCookie *cookie;
@@ -246,6 +254,7 @@
 
 - (void)openInCordovaWebView:(NSURL*)url withOptions:(NSString*)options HTMLFastText:(NSString*)HTMLFastText
 {
+    NSLog(@"===============openInCordovaWebView===================");
     if ([self.commandDelegate URLIsWhitelisted:url]) {
         NSURLRequest* request = [NSURLRequest requestWithURL:url];
         [self.webView loadRequest:request];
@@ -259,6 +268,7 @@
 
 - (void)openInSystem:(NSURL*)url
 {
+    NSLog(@"====================openInSystem=======================");
     if ([[UIApplication sharedApplication] canOpenURL:url]) {
         [[UIApplication sharedApplication] openURL:url];
     } else { // handle any custom schemes to plugins
@@ -424,11 +434,13 @@
 
 - (void)webViewDidStartLoad:(UIWebView*)theWebView
 {
+    NSLog(@"=========webViewDidStartLoad========");
     _injectedIframeBridge = NO;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView*)theWebView
 {
+     NSLog(@"============webViewDidFinishLoad========");
     if (self.callbackId != nil) {
         // TODO: It would be more useful to return the URL the page is actually on (e.g. if it's been redirected).
         NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
@@ -510,33 +522,34 @@
 - (void)createViews
 {
     // We create the views in code for primarily for ease of upgrades and not requiring an external .xib to be included
-
     CGRect webViewBounds = self.view.bounds;
     BOOL toolbarIsAtBottom = ![_browserOptions.toolbarposition isEqualToString:kInAppBrowserToolbarBarPositionTop];
+    
     webViewBounds.size.height -= _browserOptions.location ? FOOTER_HEIGHT : TOOLBAR_HEIGHT;
-    self.webView = [[UIWebView alloc] initWithFrame:webViewBounds];
-    self.textWebView = [[UIWebView alloc] initWithFrame:webViewBounds];
     
+    float toolbarY = toolbarIsAtBottom ? self.view.bounds.size.height - TOOLBAR_HEIGHT : 0.0;
+    CGRect toolbarFrame = CGRectMake(0.0, toolbarY, self.view.bounds.size.width, TOOLBAR_HEIGHT);
+    
+    self.toolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
+    self.toolbar.alpha = 1.000;
+    self.toolbar.autoresizesSubviews = YES;
+    self.toolbar.autoresizingMask = toolbarIsAtBottom ? (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin) : UIViewAutoresizingFlexibleWidth;
+    //self.toolbar.barStyle = UIBarStyle;
+    self.toolbar.tintColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0];
+    self.toolbar.tintColor = [UIColor whiteColor];
+    self.toolbar.translucent = NO;
+    self.toolbar.clearsContextBeforeDrawing = NO;
+    self.toolbar.clipsToBounds = NO;
+    self.toolbar.contentMode = UIViewContentModeScaleToFill;
+    self.toolbar.hidden = NO;
+    self.toolbar.multipleTouchEnabled = NO;
+    self.toolbar.opaque = NO;
+    self.toolbar.userInteractionEnabled = YES;
+    
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
     self.webView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-    self.textWebView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-    
-    [self.view addSubview:self.textWebView];
-    
-    [self.view addSubview:self.webView];
-    
-    
-    // [self.webView setHidden:YES];
-    // [self.textWebView setHidden:YES];
-    
-    self.textWebView.layer.borderColor = [UIColor whiteColor].CGColor;
-    self.textWebView.layer.borderWidth = 3.0f;
-
     self.webView.delegate = _webViewDelegate;
     self.webView.backgroundColor = [UIColor whiteColor];
-    
-    self.textWebView.delegate = _webViewDelegate;
-    self.textWebView.backgroundColor = [UIColor whiteColor];
-    
     self.webView.clearsContextBeforeDrawing = YES;
     self.webView.clipsToBounds = YES;
     self.webView.contentMode = UIViewContentModeScaleToFill;
@@ -545,6 +558,10 @@
     self.webView.scalesPageToFit = NO;
     self.webView.userInteractionEnabled = YES;
     
+    
+    self.textWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
+    self.textWebView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    self.textWebView.backgroundColor = [UIColor whiteColor];
     self.textWebView.clearsContextBeforeDrawing = YES;
     self.textWebView.clipsToBounds = YES;
     self.textWebView.contentMode = UIViewContentModeScaleToFill;
@@ -553,7 +570,7 @@
     self.textWebView.scalesPageToFit = YES;
     self.textWebView.userInteractionEnabled = YES;
 
-    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.spinner.alpha = 1.000;
     self.spinner.autoresizesSubviews = YES;
     self.spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
@@ -611,31 +628,8 @@
                                                        target:self
                                                        action:@selector(webViewSharePage)];
     self.shareButton.enabled = YES;
-
     
-
-    float toolbarY = toolbarIsAtBottom ? self.view.bounds.size.height - TOOLBAR_HEIGHT : 0.0;
-    CGRect toolbarFrame = CGRectMake(0.0, toolbarY, self.view.bounds.size.width, TOOLBAR_HEIGHT);
-    
-    self.toolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
-    self.toolbar.alpha = 1.000;
-    self.toolbar.autoresizesSubviews = YES;
-    self.toolbar.autoresizingMask = toolbarIsAtBottom ? (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin) : UIViewAutoresizingFlexibleWidth;
-    //self.toolbar.barStyle = UIBarStyle;
-    self.toolbar.tintColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0];
-    self.toolbar.tintColor = [UIColor whiteColor];
-    self.toolbar.translucent = NO;
-    self.toolbar.clearsContextBeforeDrawing = NO;
-    self.toolbar.clipsToBounds = NO;
-    self.toolbar.contentMode = UIViewContentModeScaleToFill;
-    self.toolbar.hidden = NO;
-    self.toolbar.multipleTouchEnabled = NO;
-    self.toolbar.opaque = NO;
-    self.toolbar.userInteractionEnabled = YES;
-    
-    
-    self.toolbarText = [[UIView alloc] initWithFrame:toolbarFrame];
-//    self.toolbarText.alpha = 1.000;
+    self.toolbarText = [[UIView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
     self.toolbarText.autoresizesSubviews = NO;
     self.toolbarText.autoresizingMask = toolbarIsAtBottom ? (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin) : UIViewAutoresizingFlexibleWidth;
     //self.toolbar.barStyle = UIBarStyle;
@@ -651,17 +645,7 @@
     self.toolbarText.multipleTouchEnabled = NO;
     self.toolbarText.opaque = YES;
     self.toolbarText.userInteractionEnabled = YES;
-    
-    [self.view addSubview:self.toolbarText];
-    
-//    NSString *pathLoader = @"loader.gif";
-//    UIImage *loaderImg = [[UIImage imageNamed:pathLoader] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-//    UIImageView* loader = [[UIImageView alloc] initWithFrame:self.view.bounds];
-//    loader.animationImages = [NSArray arrayWithObjects:
-//                                         loaderImg, nil];
-//    loader.animationDuration = 1.0f;
-//    loader.animationRepeatCount = 0;
-//    [loader startAnimating];
+
     NSArray *animationFrames = [NSArray arrayWithObjects:
                                 [UIImage imageNamed:@"loader_x30001.png"],
                                 [UIImage imageNamed:@"loader_x30002.png"],
@@ -715,10 +699,6 @@
     fastText.text = NSLocalizedString(@"Tap Fast View to see content faster.", nil);
     fastText.textAlignment = NSTextAlignmentCenter;
     [fastText setFont:[UIFont fontWithName:@"HelveticaNeue" size:10]];
-    
-    
-    
-    
     
     CGFloat labelInset = 5.0;
     float locationBarY = toolbarIsAtBottom ? self.view.bounds.size.height - FOOTER_HEIGHT : self.view.bounds.size.height - LOCATIONBAR_HEIGHT;
@@ -802,17 +782,43 @@
 //    [self.textButton setCenter:self.toolbarText.center];
 
     self.view.backgroundColor = [UIColor grayColor];
+    
     [self.view addSubview:self.toolbar];
-    // [self.view addSubview:self.toolbarText];
     [self.view addSubview:self.addressLabel];
     [self.view addSubview:self.spinner];
+    
+    [self.view addSubview:self.webView];
+    [self.view addSubview:self.toolbarText];
+    [self.view addSubview:self.textWebView];
 
+}
 
-    [self.view sendSubviewToBack:self.textWebView];
-    [self.view sendSubviewToBack:self.toolbarText];
-    [self.view sendSubviewToBack:self.webView];
-
-    [self rePositionViews];
+-(void) showWebView {
+    NSLog(@"========showView===========");
+    self.addressLabel.text = [self.currentURL absoluteString];
+    self.backButton.enabled = self.webView.canGoBack;
+    self.forwardButton.enabled = self.webView.canGoForward;
+    self.textButton.enabled = NO;
+    
+    if( !self.textModeActivated ){
+        [self.textWebView removeFromSuperview];
+    }
+    
+    //if( !self.didInit ){
+        self.didInit = YES;
+        // [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.webView.frame.size.height , self.webView.frame.size.width, self.webView.frame.size.height)];
+        [UIView animateWithDuration:0.25 animations:^{
+            [self.webView setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
+            // [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
+        [self.toolbarText setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, 0)];
+        } completion:^(BOOL finished) {
+            if( !self.textModeActivated ){
+                [self.toolbarText setHidden:YES];
+            }
+        }];
+    //}
+    
+    [self showAllButtons];
 }
 
 -(void) showAllButtons {
@@ -864,8 +870,8 @@
 
 - (void) setWebViewFrame : (CGRect) frame {
     NSLog(@"Setting the WebView's frame to %@", NSStringFromCGRect(frame));
-    [self.webView setFrame:frame];
-    [self.textWebView setFrame:frame];
+    //[self.webView setFrame:frame];
+    //[self.textWebView setFrame:frame];
 }
 
 - (void)setCloseButtonTitle:(NSString*)title
@@ -966,11 +972,11 @@
         if ([toolbarPosition isEqualToString:kInAppBrowserToolbarBarPositionTop]) {
             toolbarFrame.origin.y = 0;
             webViewBounds.origin.y += toolbarFrame.size.height;
-            [self setWebViewFrame:webViewBounds];
+            //[self setWebViewFrame:webViewBounds];
         } else {
             toolbarFrame.origin.y = (webViewBounds.size.height + LOCATIONBAR_HEIGHT);
         }
-        [self setWebViewFrame:webViewBounds];
+        //[self setWebViewFrame:webViewBounds];
 
     } else {
         self.toolbar.hidden = YES;
@@ -982,14 +988,14 @@
             // webView take up whole height less locationBar height
             CGRect webViewBounds = self.view.bounds;
             webViewBounds.size.height -= LOCATIONBAR_HEIGHT;
-            [self setWebViewFrame:webViewBounds];
+            //[self setWebViewFrame:webViewBounds];
 
             // move locationBar down
             locationbarFrame.origin.y = webViewBounds.size.height;
             self.addressLabel.frame = locationbarFrame;
         } else {
             // no locationBar, expand webView to screen dimensions
-            [self setWebViewFrame:self.view.bounds];
+            //[self setWebViewFrame:self.view.bounds];
         }
     }
 }
@@ -1001,6 +1007,7 @@
 
 - (void)viewDidUnload
 {
+    NSLog(@"============viewDidUnload=============");
     [self.webView loadHTMLString:nil baseURL:nil];
     [self.textWebView loadHTMLString:nil baseURL:nil];
     [CDVUserAgentUtil releaseLock:&_userAgentLockToken];
@@ -1069,7 +1076,7 @@
     // [self.toolbarText removeFromSuperview];
     // [self.view addSubview:self.toolbarText];
     [UIView animateWithDuration:0.25 animations:^{
-        [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.textWebView.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
+        [self.textWebView setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
         // [self.toolbarText setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, self.textWebView.frame.size.width)];
     } completion:^(BOOL finished) {
         if( self.didInit ){
@@ -1101,14 +1108,10 @@
         // [self.textWebView setHidden:NO];
 
         // [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.textWebView.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
-        NSInteger height = self.toolbarText.frame.size.height;    
+        //NSInteger height = self.toolbarText.frame.size.height;
         [UIView animateWithDuration:0.25 animations:^{
-            // [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.webView.frame.size.width, self.webView.frame.size.height)];
-            [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
-            // [self.toolbarText setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, 0)];
+            [self.textWebView setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
         } completion:^(BOOL finished) {
-            // [self.toolbarText setHidden:YES];
-            // [self.toolbarText removeFromSuperview];
         }];
         
 //        NSString *js = @"try{cordovaInappBrowserInsertText();}catch(e){}";
@@ -1138,19 +1141,82 @@
 
 - (void)navigateTo:(NSURL*)url HTMLFastText:(NSString*)HTMLFastText
 {
-    NSURLRequest* request = [NSURLRequest requestWithURL:url];
-
-    if (_userAgentLockToken != 0) {
-        [self.webView loadRequest:request];
-        [self.textWebView loadHTMLString:HTMLFastText baseURL:nil];
-    } else {
-        [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
-            _userAgentLockToken = lockToken;
-            [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
-            [self.webView loadRequest:request];
-            [self.textWebView loadHTMLString:HTMLFastText baseURL:nil];
-        }];
-    }
+    NSLog(@"======================navigate toooooo=============================");
+    //[self.webView stopLoading];
+    [self.textWebView loadHTMLString:HTMLFastText baseURL:nil];
+    
+    CDVReachability* networkReachability = [CDVReachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
+    
+    NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval: 10.0];
+    
+    //urlData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+    {
+        if ([data length] > 0 && error == nil){
+            if (_userAgentLockToken != 0) {
+                NSString *htmlString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                [self.webView loadHTMLString:htmlString baseURL:url];
+            }
+            else{
+                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
+                    _userAgentLockToken = lockToken;
+                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
+                    NSString *htmlString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                    NSLog(@"======================htmll=============================");
+                    [self.webView loadHTMLString:htmlString baseURL:url];
+                }];
+            }
+        }
+        else if ([data length] == 0 && error == nil){
+            if (_userAgentLockToken != 0) {
+                if(networkStatus != NotReachable){
+                    [self.webView loadRequest:request];
+                }
+                else{
+                    [self webViewTextMode];
+                }
+            }
+            else{
+                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
+                    _userAgentLockToken = lockToken;
+                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
+                    if(networkStatus != NotReachable){
+                        [self.webView loadRequest:request];
+                    }
+                    else{
+                        [self webViewTextMode];
+                    }
+                }];
+            }
+        }
+        else if (error != nil && error.code ){
+            if (_userAgentLockToken != 0) {
+                if(networkStatus != NotReachable){
+                    [self.webView loadRequest:request];
+                }
+                else{
+                    [self webViewTextMode];
+                }
+            }
+            else{
+                [CDVUserAgentUtil acquireLock:^(NSInteger lockToken) {
+                    _userAgentLockToken = lockToken;
+                    [CDVUserAgentUtil setUserAgent:_userAgent lockToken:lockToken];
+                    if(networkStatus != NotReachable){
+                        [self.webView loadRequest:request];
+                    }
+                    else{
+                        [self webViewTextMode];
+                    }
+                }];
+            }
+        }
+        else if (error != nil){
+            [self webViewTextMode];
+        }
+    }];
 }
 
 - (void)goBack:(id)sender
@@ -1169,7 +1235,6 @@
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
-    [self rePositionViews];
 
     [super viewWillAppear:animated];
 }
@@ -1185,24 +1250,20 @@
     return statusBarOffset;
 }
 
-- (void) rePositionViews {
-    if ([_browserOptions.toolbarposition isEqualToString:kInAppBrowserToolbarBarPositionTop]) {
-        if( !self.didInit && !self.textModeActivated ){
-            // [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.webView.frame.size.width, self.webView.frame.size.height)];
-            [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.webView.frame.size.height , self.webView.frame.size.width, self.webView.frame.size.height)];
-            // [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
-            [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.textWebView.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
-            [self.toolbar setFrame:CGRectMake(self.toolbar.frame.origin.x, [self getStatusBarOffset], self.toolbar.frame.size.width, self.toolbar.frame.size.height)];
-            [self.toolbarText setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, self.webView.frame.size.height)];
-        }
-    }
-}
-
 #pragma mark UIWebViewDelegate
 
 - (void)webViewDidStartLoad:(UIWebView*)theWebView
 {
     // loading url, start spinner, update back/forward
+
+    NSLog(@"=======now================");
+    [NSTimer scheduledTimerWithTimeInterval:1.0
+                                     target:self
+                                   selector:@selector(showWebView)
+                                   userInfo:nil
+                                    repeats:NO];
+    
+    //[self showWebView];
 
     self.addressLabel.text = NSLocalizedString(@"Loading...", nil);
     self.backButton.enabled = theWebView.canGoBack;
@@ -1238,50 +1299,22 @@
 - (void)webViewDidFinishLoad:(UIWebView*)theWebView
 {
     // update url, stop spinner, update back/forward
+    
+    NSLog(@"======================webViewDidFinishLoad=============================");
 
-    self.addressLabel.text = [self.currentURL absoluteString];
-    self.backButton.enabled = theWebView.canGoBack;
-    self.forwardButton.enabled = theWebView.canGoForward;
-    self.textButton.enabled = NO;
+    //[self showWebView];
     
-    if( !self.textModeActivated ){
-        [self.textWebView removeFromSuperview];
-    }
-
-    NSInteger height = self.toolbarText.frame.size.height;    
-    if( !self.didInit ){
-        self.didInit = YES;
-        // [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.webView.frame.size.height , self.webView.frame.size.width, self.webView.frame.size.height)];
-        [UIView animateWithDuration:0.25 animations:^{
-            [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.webView.frame.size.width, self.webView.frame.size.height)];
-            // [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
-            [self.toolbarText setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, 0)];
-        } completion:^(BOOL finished) {
-            if( !self.textModeActivated ){
-                [self.toolbarText setHidden:YES];
-            }
-            // [self.toolbarText removeFromSuperview];
-        }];
-    }
-    //     // [self.webView setHidden:NO];
-    //     // [self.textWebView loadHTMLString:nil baseURL:nil];
-    // }else{
-    //     // [self.webView loadHTMLString:nil baseURL:nil];
-    // }
-    
-    [self showAllButtons];
-    
-    if (theWebView.canGoForward) {
-        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    }else{
-        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    }
-    
-    if (theWebView.canGoBack) {
-        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    }else{
-        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    }
+//    if (theWebView.canGoForward) {
+//        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+//    }else{
+//        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+//    }
+//    
+//    if (theWebView.canGoBack) {
+//        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+//    }else{
+//        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+//    }
 
     [self.spinner stopAnimating];
 

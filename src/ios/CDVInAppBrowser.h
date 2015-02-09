@@ -21,6 +21,7 @@
 #import <Cordova/CDVInvokedUrlCommand.h>
 #import <Cordova/CDVScreenOrientationDelegate.h>
 #import <Cordova/CDVWebViewDelegate.h>
+#import "CDVReachability.h"
 
 @class CDVInAppBrowserViewController;
 
