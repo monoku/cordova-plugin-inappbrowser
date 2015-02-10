@@ -30,16 +30,28 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.GeolocationPermissions.Callback;
+import org.apache.cordova.inappbrowser.InAppBrowser.InAppBrowserClient;
 
 public class InAppChromeClient extends WebChromeClient {
 
     private CordovaWebView webView;
+    private InAppBrowserClient client;
     private String LOG_TAG = "InAppChromeClient";
     private long MAX_QUOTA = 100 * 1024 * 1024;
+
+    public void setClient(InAppBrowserClient client){
+        this.client = client;
+    }
 
     public InAppChromeClient(CordovaWebView webView) {
         super();
         this.webView = webView;
+    }
+
+    public InAppChromeClient(CordovaWebView webView, InAppBrowserClient client) {
+        super();
+        this.webView = webView;
+        this.client = client;
     }
     /**
      * Handle database quota exceeded notification.
@@ -57,6 +69,17 @@ public class InAppChromeClient extends WebChromeClient {
     {
         LOG.d(LOG_TAG, "onExceededDatabaseQuota estimatedSize: %d  currentQuota: %d  totalUsedQuota: %d", estimatedSize, currentQuota, totalUsedQuota);
         quotaUpdater.updateQuota(MAX_QUOTA);
+    }
+
+       
+     public void onProgressChanged (WebView view, int newProgress){
+        String url = view.getUrl();
+        if( url != null && !url.equals("about:blank") ){
+            LOG.d(LOG_TAG, "onProgressChanged==="+ newProgress + "----" + url);
+            if( newProgress >= 50){
+                this.client.animateView();
+            }
+        }
     }
 
     /**

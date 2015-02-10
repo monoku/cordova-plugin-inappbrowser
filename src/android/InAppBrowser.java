@@ -159,6 +159,7 @@ public class InAppBrowser extends CordovaPlugin {
                         if (url.startsWith("file://") || url.startsWith("javascript:") 
                                 || Config.isUrlWhiteListed(url)) {
                             Log.d(LOG_TAG, "loading in webview");
+                            webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
                             webView.loadUrl(url);
                         }
                         //Load the dialer
@@ -582,8 +583,10 @@ public class InAppBrowser extends CordovaPlugin {
         imm.hideSoftInputFromWindow(edittext.getWindowToken(), 0);
 
         if (!url.startsWith("http") && !url.startsWith("file:")) {
+            this.inAppWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
             this.inAppWebView.loadUrl("http://" + url);
         } else {
+            this.inAppWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
             this.inAppWebView.loadUrl(url);
         }
         this.inAppWebView.requestFocus();
@@ -622,15 +625,15 @@ public class InAppBrowser extends CordovaPlugin {
             if (hidden != null) {
                 openWindowHidden = hidden.booleanValue();
             }
-            Boolean cache = features.get(CLEAR_ALL_CACHE);
-            if (cache != null) {
-                clearAllCache = cache.booleanValue();
-            } else {
-                cache = features.get(CLEAR_SESSION_CACHE);
-                if (cache != null) {
-                    clearSessionCache = cache.booleanValue();
-                }
-            }
+            // Boolean cache = features.get(CLEAR_ALL_CACHE);
+            // if (cache != null) {
+            //     clearAllCache = cache.booleanValue();
+            // } else {
+            //     cache = features.get(CLEAR_SESSION_CACHE);
+            //     if (cache != null) {
+            //         clearSessionCache = cache.booleanValue();
+            //     }
+            // }
             Log.d(LOG_TAG, "BEFORE " + hideFav);
             Log.d(LOG_TAG, "BEFORE " + HIDE_FAV);
             Log.d(LOG_TAG, "BEFORE " + features);
@@ -945,10 +948,11 @@ public class InAppBrowser extends CordovaPlugin {
                 textWebView = new WebView(cordova.getActivity());
                 inAppWebView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 textWebView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                inAppWebView.setWebChromeClient(new org.apache.cordova.inappbrowser.InAppChromeClient(thatWebView));
-                textWebView.setWebChromeClient(new org.apache.cordova.inappbrowser.InAppChromeClient(thatWebView));
                 WebViewClient client = new InAppBrowserClient(thatWebView, edittext);
                 inAppWebView.setWebViewClient(client);
+                inAppWebView.setWebChromeClient(new org.apache.cordova.inappbrowser.InAppChromeClient(thatWebView, (InAppBrowserClient)client));
+                textWebView.setWebChromeClient(new org.apache.cordova.inappbrowser.InAppChromeClient(thatWebView, (InAppBrowserClient)client));
+
                 // inAppWebView.setVisibility(View.INVISIBLE);
                 // textWebView.setVisibility(View.INVISIBLE);
 
@@ -987,6 +991,7 @@ public class InAppBrowser extends CordovaPlugin {
                 String mime = "text/html";
                 String encoding = "utf-8";
 
+                inAppWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
                 inAppWebView.loadUrl(url);
                 textWebView.loadDataWithBaseURL(null, HTMLFastText, mime, encoding, null);
                 inAppWebView.setId(6);
@@ -1103,6 +1108,7 @@ public class InAppBrowser extends CordovaPlugin {
         @Override
         public void onPageStarted(WebView view, String url,  Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            didLoad = false;
             String newloc = "";
             if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("file:")) {
                 newloc = url;
@@ -1208,6 +1214,29 @@ public class InAppBrowser extends CordovaPlugin {
             //     forward.setBackground(forwardIcon);
             // }
         }
+
+        public void animateView(){
+            if (!didLoad){
+                didLoad = true;
+                if( !textModeActivated ) {
+                    LOG.d("InAppChromeClient", "animateeeeeeee");
+                    textWebView.setVisibility(View.GONE);
+                    ValueAnimator va = ValueAnimator.ofInt(fastViewContainter.getHeight(), 0);
+                    va.setDuration(250);
+                    va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            Integer value = (Integer) animation.getAnimatedValue();
+                            Log.d(LOG_TAG, "animating: "+value);
+                            fastViewContainter.getLayoutParams().height = value.intValue();
+                            fastViewContainter.requestLayout();
+                        }
+                    });
+                    va.start();
+                    showAllButtons();
+                }
+            }
+        }
+
         
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
@@ -1217,34 +1246,24 @@ public class InAppBrowser extends CordovaPlugin {
             Log.d(LOG_TAG,"LA URL!!!");
 
 
-            if( url != null && !url.equals("") && !url.equals("about:blank") ) {
-                didLoad = true;
-                if( !textModeActivated ) {
-                    textWebView.setVisibility(View.GONE);
-                    // inAppWebView.setVisibility(View.VISIBLE);
-                    // WebSettings webSettings = textWebView.getSettings();
-                    // webSettings.setJavaScriptEnabled(false);
-                    ValueAnimator va = ValueAnimator.ofInt(fastViewContainter.getHeight(), 0);
-                    va.setDuration(250);
-                    va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            Integer value = (Integer) animation.getAnimatedValue();
-                            Log.d(LOG_TAG, "animating: "+value);
-                            fastViewContainter.getLayoutParams().height = value.intValue();
-//                    fastViewContainter.setTranslationY(-value.intValue());
-//                    fastViewContainter.requestLayout();
-                            fastViewContainter.requestLayout();
-                        }
-                    });
-                    va.start();
-                    showAllButtons();
-//                    textWebView.loadDataWithBaseURL(null, null, "text/html", "utf-8", null);
-                }else{
-                    // WebSettings webSettings = inAppWebView.getSettings();
-                    // webSettings.setJavaScriptEnabled(false);
-//                    inAppWebView.loadDataWithBaseURL(null, null, "text/html", "utf-8", null);
-                }
-            }
+            // if( url != null && !url.equals("") && !url.equals("about:blank") ) {
+            //     didLoad = true;
+            //     if( !textModeActivated ) {
+            //         textWebView.setVisibility(View.GONE);
+            //         ValueAnimator va = ValueAnimator.ofInt(fastViewContainter.getHeight(), 0);
+            //         va.setDuration(250);
+            //         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            //             public void onAnimationUpdate(ValueAnimator animation) {
+            //                 Integer value = (Integer) animation.getAnimatedValue();
+            //                 Log.d(LOG_TAG, "animating: "+value);
+            //                 fastViewContainter.getLayoutParams().height = value.intValue();
+            //                 fastViewContainter.requestLayout();
+            //             }
+            //         });
+            //         va.start();
+            //         showAllButtons();
+            //     }
+            // }
             
             try {
                 JSONObject obj = new JSONObject();
@@ -1286,6 +1305,7 @@ public class InAppBrowser extends CordovaPlugin {
                 back.setBackground(backIcon);
                 forward.setBackground(forwardIcon);
             }
+
         }
         
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
