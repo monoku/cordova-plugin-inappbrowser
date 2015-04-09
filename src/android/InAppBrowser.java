@@ -823,10 +823,37 @@ public class InAppBrowser extends CordovaPlugin {
                     }
                 });
 
+
+                // Share button
+                share = new Button(cordova.getActivity());
+                RelativeLayout.LayoutParams shareLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                shareLayoutParams.addRule(RelativeLayout.LEFT_OF, 5);
+                shareLayoutParams.setMargins(0, 0, this.dpToPixels(10), 0);
+                share.setLayoutParams(shareLayoutParams);
+                share.setContentDescription("Share Button");
+                share.setId(10);
+                share.setVisibility(View.GONE);
+                int shareResId = activityRes.getIdentifier("icon_share", "drawable", cordova.getActivity().getPackageName());
+                Drawable shareIcon = activityRes.getDrawable(shareResId);
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+                {
+                    share.setBackgroundDrawable(shareIcon);
+                }
+                else
+                {
+                    share.setBackground(shareIcon);
+                }
+                share.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        sharePage();
+                    }
+                });
+
+
                 // Fav button
                 fav = new Button(cordova.getActivity());
                 RelativeLayout.LayoutParams favLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                favLayoutParams.addRule(RelativeLayout.LEFT_OF, 5);
+                favLayoutParams.addRule(RelativeLayout.LEFT_OF, 10);
                 favLayoutParams.setMargins(0, 0, this.dpToPixels(12), 0);
                 fav.setLayoutParams(favLayoutParams);
                 fav.setContentDescription("Fav Button");
@@ -848,30 +875,6 @@ public class InAppBrowser extends CordovaPlugin {
                     }
                 });
 
-                // Share button
-                share = new Button(cordova.getActivity());
-                RelativeLayout.LayoutParams shareLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                shareLayoutParams.addRule(RelativeLayout.LEFT_OF, 9);
-                shareLayoutParams.setMargins(0, 0, this.dpToPixels(10), 0);
-                share.setLayoutParams(shareLayoutParams);
-                share.setContentDescription("Share Button");
-                share.setId(10);
-                share.setVisibility(View.GONE);
-                int shareResId = activityRes.getIdentifier("icon_share", "drawable", cordova.getActivity().getPackageName());
-                Drawable shareIcon = activityRes.getDrawable(shareResId);
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-                {
-                    share.setBackgroundDrawable(shareIcon);
-                }
-                else
-                {
-                    share.setBackground(shareIcon);
-                }
-                share.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        sharePage();
-                    }
-                });
 
 
                 // *********************************
@@ -938,7 +941,7 @@ public class InAppBrowser extends CordovaPlugin {
                     e.printStackTrace();
                 }
                 GifMovieView gifView = new GifMovieView(cordova.getActivity().getApplicationContext(), stream);
-                gifView.setLayoutParams(new LayoutParams(19*4, 31*4));
+                gifView.setLayoutParams(new LinearLayout.LayoutParams(5, 5));
                 fastViewContainter.addView(gifView);
 
 

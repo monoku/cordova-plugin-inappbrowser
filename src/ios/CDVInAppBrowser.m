@@ -647,33 +647,33 @@
     self.toolbarText.userInteractionEnabled = YES;
 
     NSArray *animationFrames = [NSArray arrayWithObjects:
-                                [UIImage imageNamed:@"loader_x30001.png"],
-                                [UIImage imageNamed:@"loader_x30002.png"],
-                                [UIImage imageNamed:@"loader_x30003.png"],
-                                [UIImage imageNamed:@"loader_x30004.png"],
-                                [UIImage imageNamed:@"loader_x30005.png"],
-                                [UIImage imageNamed:@"loader_x30006.png"],
-                                [UIImage imageNamed:@"loader_x30007.png"],
-                                [UIImage imageNamed:@"loader_x30008.png"],
-                                [UIImage imageNamed:@"loader_x30009.png"],
-                                [UIImage imageNamed:@"loader_x30010.png"],
-                                [UIImage imageNamed:@"loader_x30011.png"],
-                                [UIImage imageNamed:@"loader_x30012.png"],
-                                [UIImage imageNamed:@"loader_x30013.png"],
-                                [UIImage imageNamed:@"loader_x30014.png"],
-                                [UIImage imageNamed:@"loader_x30015.png"],
-                                [UIImage imageNamed:@"loader_x30016.png"],
-                                [UIImage imageNamed:@"loader_x30017.png"],
-                                [UIImage imageNamed:@"loader_x30018.png"],
-                                [UIImage imageNamed:@"loader_x30019.png"],
-                                [UIImage imageNamed:@"loader_x30020.png"],
-                                [UIImage imageNamed:@"loader_x30021.png"],
-                                [UIImage imageNamed:@"loader_x30022.png"],
-                                [UIImage imageNamed:@"loader_x30023.png"],
-                                [UIImage imageNamed:@"loader_x30024.png"],
-                                [UIImage imageNamed:@"loader_x30025.png"],
-                                [UIImage imageNamed:@"loader_x30026.png"],
-                                [UIImage imageNamed:@"loader_x30027.png"],
+                                [UIImage imageNamed:@"loader0001.png"],
+                                [UIImage imageNamed:@"loader0002.png"],
+                                [UIImage imageNamed:@"loader0003.png"],
+                                [UIImage imageNamed:@"loader0004.png"],
+                                [UIImage imageNamed:@"loader0005.png"],
+                                [UIImage imageNamed:@"loader0006.png"],
+                                [UIImage imageNamed:@"loader0007.png"],
+                                [UIImage imageNamed:@"loader0008.png"],
+                                [UIImage imageNamed:@"loader0009.png"],
+                                [UIImage imageNamed:@"loader0010.png"],
+                                [UIImage imageNamed:@"loader0011.png"],
+                                [UIImage imageNamed:@"loader0012.png"],
+                                [UIImage imageNamed:@"loader0013.png"],
+                                [UIImage imageNamed:@"loader0014.png"],
+                                [UIImage imageNamed:@"loader0015.png"],
+                                [UIImage imageNamed:@"loader0016.png"],
+                                [UIImage imageNamed:@"loader0017.png"],
+                                [UIImage imageNamed:@"loader0018.png"],
+                                [UIImage imageNamed:@"loader0019.png"],
+                                [UIImage imageNamed:@"loader0020.png"],
+                                [UIImage imageNamed:@"loader0021.png"],
+                                [UIImage imageNamed:@"loader0022.png"],
+                                [UIImage imageNamed:@"loader0023.png"],
+                                [UIImage imageNamed:@"loader0024.png"],
+                                [UIImage imageNamed:@"loader0025.png"],
+                                [UIImage imageNamed:@"loader0026.png"],
+                                [UIImage imageNamed:@"loader0027.png"],
                                 nil];
     
     UIImageView *loader = [[UIImageView alloc] init];
@@ -681,7 +681,7 @@
     loader.animationDuration = 1.2;
     loader.animationRepeatCount = 0;
     [loader startAnimating];
-    loader.frame= CGRectMake(self.view.bounds.size.width/2-23/2, 220, 23, 33);
+    loader.frame= CGRectMake(self.view.bounds.size.width/2-23/2, 220, 17, 17);
     
     UILabel *fastText = [[UILabel alloc] initWithFrame:CGRectMake(0, 180, self.view.bounds.size.width, 40)];
     fastText.adjustsFontSizeToFitWidth = NO;
@@ -848,9 +848,9 @@
         }
     }else{
         if (self.textModeActivated) {
-            [self.toolbar setItems:@[negativeSpacerLarge, self.backButtonText, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+            [self.toolbar setItems:@[negativeSpacerLarge, self.backButtonText, flexibleSpaceButton, self.favButton, fixedSpaceButton, self.shareButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
         }else{
-            [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+            [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.favButton, fixedSpaceButton, self.shareButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
         }
     }
     

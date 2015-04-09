@@ -128,7 +128,7 @@ public class GifMovieView extends View {
 			/*
 			 * calculate overall scale
 			 */
-            mScale = 1.9f;//1f / Math.max(scaleH, scaleW);
+            mScale = 1f;//1f / Math.max(scaleH, scaleW);
 
             mMeasuredMovieWidth = (int) (movieWidth * mScale);
             mMeasuredMovieHeight = (int) (movieHeight * mScale);
