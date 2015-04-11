@@ -255,10 +255,6 @@
         <resource-file src="src/ios/loader0021.png" target="src/ios/loader0021.png"/>
         <resource-file src="src/ios/loader0022.png" target="src/ios/loader0022.png"/>
         <resource-file src="src/ios/loader0023.png" target="src/ios/loader0023.png"/>
-        <resource-file src="src/ios/loader0024.png" target="src/ios/loader0024.png"/>
-        <resource-file src="src/ios/loader0025.png" target="src/ios/loader0025.png"/>
-        <resource-file src="src/ios/loader0026.png" target="src/ios/loader0026.png"/>
-        <resource-file src="src/ios/loader0027.png" target="src/ios/loader0027.png"/>
 	    <framework src="CoreGraphics.framework" />
     </platform>
 

@@ -670,10 +670,6 @@
                                 [UIImage imageNamed:@"loader0021.png"],
                                 [UIImage imageNamed:@"loader0022.png"],
                                 [UIImage imageNamed:@"loader0023.png"],
-                                [UIImage imageNamed:@"loader0024.png"],
-                                [UIImage imageNamed:@"loader0025.png"],
-                                [UIImage imageNamed:@"loader0026.png"],
-                                [UIImage imageNamed:@"loader0027.png"],
                                 nil];
     
     UIImageView *loader = [[UIImageView alloc] init];
