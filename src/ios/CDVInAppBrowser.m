@@ -546,7 +546,7 @@
     self.toolbar.opaque = NO;
     self.toolbar.userInteractionEnabled = YES;
     
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - 55)];
     self.webView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     self.webView.delegate = _webViewDelegate;
     self.webView.backgroundColor = [UIColor whiteColor];
@@ -804,7 +804,7 @@
         self.didInit = YES;
         // [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.webView.frame.size.height , self.webView.frame.size.width, self.webView.frame.size.height)];
         [UIView animateWithDuration:0.25 animations:^{
-            [self.webView setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
+            [self.webView setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - 55)];
             // [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
         [self.toolbarText setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, 0)];
         } completion:^(BOOL finished) {
