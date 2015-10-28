@@ -603,7 +603,7 @@ public class InAppBrowser extends CordovaPlugin {
         // if (this.inAppWebView.canGoBack()) {
         //     this.inAppWebView.goBack();
         // }
-
+    }
     /**
      * Can the web browser go back?
      * @return boolean
