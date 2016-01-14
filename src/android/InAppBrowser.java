@@ -50,6 +50,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
+import android.webkit.HttpAuthHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -64,6 +65,7 @@ import android.widget.VideoView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaArgs;
+import org.apache.cordova.CordovaHttpAuthHandler;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.LOG;
@@ -75,6 +77,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -89,7 +92,6 @@ public class InAppBrowser extends CordovaPlugin {
     protected static final String LOG_TAG = "InAppBrowser";
     private static final String SELF = "_self";
     private static final String SYSTEM = "_system";
-    // private static final String BLANK = "_blank";
     private static final String EXIT_EVENT = "exit";
     private static final String SHARE_EVENT = "share";
     private static final String FAV_EVENT = "fav";
@@ -135,10 +137,10 @@ public class InAppBrowser extends CordovaPlugin {
     /**
      * Executes the request and returns PluginResult.
      *
-     * @param action        The action to execute.
-     * @param args          JSONArry of arguments for the plugin.
-     * @param callbackId    The callback id used when calling back into JavaScript.
-     * @return              A PluginResult object with a status and message.
+     * @param action the action to execute.
+     * @param args JSONArry of arguments for the plugin.
+     * @param callbackContext the callbackContext used when calling back into JavaScript.
+     * @return A PluginResult object with a status and message.
      */
     public boolean execute(String action, CordovaArgs args, final CallbackContext callbackContext) throws JSONException {
         if (action.equals("open")) {
@@ -381,9 +383,8 @@ public class InAppBrowser extends CordovaPlugin {
     /**
      * Display a new browser with the specified URL.
      *
-     * @param url           The url to load.
-     * @param usePhoneGap   Load url in PhoneGap webview
-     * @return              "" if ok, or error message.
+     * @param url the url to load.
+     * @return "" if ok, or error message.
      */
     public String openExternal(String url) {
         try {
@@ -665,8 +666,8 @@ public class InAppBrowser extends CordovaPlugin {
     /**
      * Display a new browser with the specified URL.
      *
-     * @param url           The url to load.
-     * @param jsonObject
+     * @param url the url to load.
+     * @param features jsonObject
      */
     public String showWebPage(final String url, HashMap<String, Boolean> features) {
         // Determine if we should hide the location bar.
@@ -1161,8 +1162,8 @@ public class InAppBrowser extends CordovaPlugin {
         /**
          * Constructor.
          *
-         * @param mContext
-         * @param edittext
+         * @param webView
+         * @param mEditText
          */
         public InAppBrowserClient(CordovaWebView webView, EditText mEditText) {
             this.webView = webView;
@@ -1372,5 +1373,39 @@ public class InAppBrowser extends CordovaPlugin {
                 Log.d(LOG_TAG, "Should never happen");
             }
         }
+        
+        /**
+         * On received http auth request.
+         */
+        @Override
+        public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+
+            // Check if there is some plugin which can resolve this auth challenge
+            PluginManager pluginManager = null;
+            try {
+                Method gpm = webView.getClass().getMethod("getPluginManager");
+                pluginManager = (PluginManager)gpm.invoke(webView);
+            } catch (NoSuchMethodException e) {
+            } catch (IllegalAccessException e) {
+            } catch (InvocationTargetException e) {
+            }
+            
+            if (pluginManager == null) {
+                try {
+                    Field pmf = webView.getClass().getField("pluginManager");
+                    pluginManager = (PluginManager)pmf.get(webView);
+                } catch (NoSuchFieldException e) {
+                } catch (IllegalAccessException e) {
+                }
+            }
+            
+            if (pluginManager != null && pluginManager.onReceivedHttpAuthRequest(webView, new CordovaHttpAuthHandler(handler), host, realm)) {
+                return;
+            }
+            
+            // By default handle 401 like we'd normally do!
+            super.onReceivedHttpAuthRequest(view, handler, host, realm);
+        }
     }
 }
+
