@@ -156,7 +156,7 @@ public class InAppBrowser extends CordovaPlugin {
 
 //            int slideAnimId = cordova.getActivity().getResources().getIdentifier("slide_down.xml", "anim", cordova.getActivity().getPackageName());
 //            slide = AnimationUtils.loadAnimation(cordova.getActivity().getApplicationContext(), slideAnimId);
-            
+
 
             Log.d(LOG_TAG, "target = " + target);
 
@@ -740,7 +740,7 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Toolbar layout
                 RelativeLayout toolbar = new RelativeLayout(cordova.getActivity());
-                //Please, no more black! 
+                //Please, no more black!
                 toolbar.setBackgroundColor(Color.WHITE);
                 toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
                 toolbar.setPadding(this.dpToPixels(8), this.dpToPixels(10), this.dpToPixels(8), this.dpToPixels(10));
@@ -981,7 +981,7 @@ public class InAppBrowser extends CordovaPlugin {
                 fastViewContainter.addView(activateTextModeButton);
 
                 TextView fastText = new TextView(cordova.getActivity());
-                fastText.setText("Tap Fast View to see content faster.");
+                fastText.setText("Tap Offline View to see content faster.");
                 fastText.setTextColor(Color.parseColor("#004251"));
                 fastText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
                 fastText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -1254,7 +1254,7 @@ public class InAppBrowser extends CordovaPlugin {
                 Log.d(LOG_TAG, "Should never happen");
             }
 
-            
+
             // Drawable backIcon;
             // Drawable forwardIcon;
             // int backResId;
