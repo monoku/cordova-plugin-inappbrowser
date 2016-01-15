@@ -1018,10 +1018,12 @@ public class InAppBrowser extends CordovaPlugin {
                 textWebView = new WebView(cordova.getActivity());
                 inAppWebView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 textWebView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                inAppWebView.setId(Integer.valueOf(6));
+                textWebView.setId(Integer.valueOf(66));
                 WebViewClient client = new InAppBrowserClient(thatWebView, edittext);
                 inAppWebView.setWebViewClient(client);
-                inAppWebView.setWebChromeClient(new org.apache.cordova.inappbrowser.InAppChromeClient(thatWebView, (InAppBrowserClient)client));
-                textWebView.setWebChromeClient(new org.apache.cordova.inappbrowser.InAppChromeClient(thatWebView, (InAppBrowserClient)client));
+                inAppWebView.setWebChromeClient(new InAppChromeClient(thatWebView, (InAppBrowserClient)client));
+                textWebView.setWebChromeClient(new InAppChromeClient(thatWebView, (InAppBrowserClient)client));
 
                 // inAppWebView.setVisibility(View.INVISIBLE);
                 // textWebView.setVisibility(View.INVISIBLE);
@@ -1171,35 +1173,30 @@ public class InAppBrowser extends CordovaPlugin {
         }
 
         /**
-         * Notify the host application that a page has started loading.
+         * Override the URL that should be loaded
          *
-         * @param view          The webview initiating the callback.
-         * @param url           The url of the page.
+         * This handles a small subset of all the URIs that would be encountered.
+         *
+         * @param webView
+         * @param url
          */
         @Override
-        public void onPageStarted(WebView view, String url,  Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            didLoad = false;
-            String newloc = "";
-            if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("file:")) {
-                newloc = url;
-            }
-            // If dialing phone (tel:5551212)
-            else if (url.startsWith(WebView.SCHEME_TEL)) {
+        public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+            if (url.startsWith(WebView.SCHEME_TEL)) {
                 try {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse(url));
                     cordova.getActivity().startActivity(intent);
+                    return true;
                 } catch (android.content.ActivityNotFoundException e) {
                     LOG.e(LOG_TAG, "Error dialing " + url + ": " + e.toString());
                 }
-            }
-
-            else if (url.startsWith("geo:") || url.startsWith(WebView.SCHEME_MAILTO) || url.startsWith("market:")) {
+            } else if (url.startsWith("geo:") || url.startsWith(WebView.SCHEME_MAILTO) || url.startsWith("market:")) {
                 try {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
                     cordova.getActivity().startActivity(intent);
+                    return true;
                 } catch (android.content.ActivityNotFoundException e) {
                     LOG.e(LOG_TAG, "Error with " + url + ": " + e.toString());
                 }
@@ -1214,8 +1211,7 @@ public class InAppBrowser extends CordovaPlugin {
                     int parmIndex = url.indexOf('?');
                     if (parmIndex == -1) {
                         address = url.substring(4);
-                    }
-                    else {
+                    } else {
                         address = url.substring(4, parmIndex);
 
                         // If body, then set sms body
@@ -1231,61 +1227,12 @@ public class InAppBrowser extends CordovaPlugin {
                     intent.putExtra("address", address);
                     intent.setType("vnd.android-dir/mms-sms");
                     cordova.getActivity().startActivity(intent);
+                    return true;
                 } catch (android.content.ActivityNotFoundException e) {
                     LOG.e(LOG_TAG, "Error sending sms " + url + ":" + e.toString());
                 }
             }
-            else {
-                newloc = "http://" + url;
-            }
-
-            if (!newloc.equals(edittext.getText().toString())) {
-                edittext.setText(newloc);
-            }
-
-            try {
-                JSONObject obj = new JSONObject();
-                obj.put("type", LOAD_START_EVENT);
-                obj.put("url", newloc);
-
-//                injectDeferredObject("try{document.querySelector('html').style.display='none !important';}catch(e){}", null);
-
-                sendUpdate(obj, true);
-            } catch (JSONException ex) {
-                Log.d(LOG_TAG, "Should never happen");
-            }
-
-
-            // Drawable backIcon;
-            // Drawable forwardIcon;
-            // int backResId;
-            // int forwardResId;
-            // Resources activityRes = cordova.getActivity().getResources();
-
-            // if( inAppWebView.canGoBack() ){
-            //     backResId = activityRes.getIdentifier("icon_arrow_left_active", "drawable", cordova.getActivity().getPackageName());
-            // }else{
-            //     backResId = activityRes.getIdentifier("icon_arrow_left", "drawable", cordova.getActivity().getPackageName());
-            // }
-            // backIcon = activityRes.getDrawable(backResId);
-
-            // if( inAppWebView.canGoForward() ){
-            //     forwardResId = activityRes.getIdentifier("icon_arrow_right_active", "drawable", cordova.getActivity().getPackageName());
-            // }else{
-            //     forwardResId = activityRes.getIdentifier("icon_arrow_right", "drawable", cordova.getActivity().getPackageName());
-            // }
-            // forwardIcon = activityRes.getDrawable(forwardResId);
-
-            // if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-            // {
-            //     back.setBackgroundDrawable(backIcon);
-            //     forward.setBackgroundDrawable(forwardIcon);
-            // }
-            // else
-            // {
-            //     back.setBackground(backIcon);
-            //     forward.setBackground(forwardIcon);
-            // }
+            return false;
         }
 
         public void animateView(){
@@ -1310,10 +1257,10 @@ public class InAppBrowser extends CordovaPlugin {
             }
         }
 
-
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
 
+            this.animateView();
 
             try {
                 JSONObject obj = new JSONObject();
