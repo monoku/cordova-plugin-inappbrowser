@@ -40,7 +40,7 @@
             <clobbers target="window.open" />
         </js-module>
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="InAppBrowser"> 
+            <feature name="InAppBrowser">
                 <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser"/>
             </feature>
         </config-file>
@@ -51,7 +51,7 @@
         <source-file src="src/android/InAppChromeClient.java" target-dir="src/org/apache/cordova/inappbrowser" />
         <source-file src="src/android/AnimatedView.java" target-dir="src/org/apache/cordova/inappbrowser" />
         <source-file src="src/android/JavaScriptInterface.java" target-dir="src/org/apache/cordova/inappbrowser" />
-        
+
         <!--  drawable src/android/resources -->
         <resource-file src="src/android/res/drawable-hdpi/ic_action_next_item.png" target="res/drawable-hdpi/ic_action_next_item.png" />
         <resource-file src="src/android/res/drawable-mdpi/ic_action_next_item.png" target="res/drawable-mdpi/ic_action_next_item.png" />
@@ -136,7 +136,7 @@
             <clobbers target="window.open" />
         </js-module>
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="InAppBrowser"> 
+            <feature name="InAppBrowser">
                 <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser"/>
             </feature>
         </config-file>
@@ -144,24 +144,24 @@
         <source-file src="src/amazon/InAppBrowser.java" target-dir="src/org/apache/cordova/inappbrowser" />
         <source-file src="src/android/InAppBrowserDialog.java" target-dir="src/org/apache/cordova/inappbrowser" />
         <source-file src="src/amazon/InAppChromeClient.java" target-dir="src/org/apache/cordova/inappbrowser" />
-        
+
         <!--  drawable src/android/resources -->
         <resource-file src="src/android/res/drawable-hdpi/ic_action_next_item.png" target="res/drawable-hdpi/ic_action_next_item.png" />
         <resource-file src="src/android/res/drawable-mdpi/ic_action_next_item.png" target="res/drawable-mdpi/ic_action_next_item.png" />
         <resource-file src="src/android/res/drawable-xhdpi/ic_action_next_item.png" target="res/drawable-xhdpi/ic_action_next_item.png" />
         <resource-file src="src/android/res/drawable-xxhdpi/ic_action_next_item.png" target="res/drawable-xxhdpi/ic_action_next_item.png" />
-        
+
         <resource-file src="src/android/res/drawable-hdpi/ic_action_previous_item.png" target="res/drawable-hdpi/ic_action_previous_item.png" />
         <resource-file src="src/android/res/drawable-mdpi/ic_action_previous_item.png" target="res/drawable-mdpi/ic_action_previous_item.png" />
         <resource-file src="src/android/res/drawable-xhdpi/ic_action_previous_item.png" target="res/drawable-xhdpi/ic_action_previous_item.png" />
         <resource-file src="src/android/res/drawable-xxhdpi/ic_action_previous_item.png" target="res/drawable-xxhdpi/ic_action_previous_item.png" />
-        
+
         <resource-file src="src/android/res/drawable-hdpi/ic_action_remove.png" target="res/drawable-hdpi/ic_action_remove.png" />
         <resource-file src="src/android/res/drawable-mdpi/ic_action_remove.png" target="res/drawable-mdpi/ic_action_remove.png" />
         <resource-file src="src/android/res/drawable-xhdpi/ic_action_remove.png" target="res/drawable-xhdpi/ic_action_remove.png" />
         <resource-file src="src/android/res/drawable-xxhdpi/ic_action_remove.png" target="res/drawable-xxhdpi/ic_action_remove.png" />
     </platform>
-    
+
     <!-- ubuntu -->
     <platform name="ubuntu">
         <js-module src="www/inappbrowser.js" name="inappbrowser">
@@ -180,15 +180,24 @@
         <js-module src="www/inappbrowser.js" name="inappbrowser">
             <clobbers target="cordova.InAppBrowser.open" />
             <clobbers target="window.open" />
-        </js-module>  
+        </js-module>
+        <js-module src="www/inappbrowserbg.js" name="inappbrowserbg">
+            <clobbers target="cordova.InAppBrowserBg.open" />
+            <clobbers target="window.openBg" />
+        </js-module>
         <config-file target="config.xml" parent="/*">
             <feature name="InAppBrowser">
-                <param name="ios-package" value="CDVInAppBrowser" /> 
+                <param name="ios-package" value="CDVInAppBrowser" />
+            </feature>
+            <feature name="InAppBrowserBg">
+                <param name="ios-package" value="CDVInAppBrowserBg" />
             </feature>
         </config-file>
 
         <header-file src="src/ios/CDVInAppBrowser.h" />
-	    <source-file src="src/ios/CDVInAppBrowser.m" />
+        <source-file src="src/ios/CDVInAppBrowser.m" />
+        <header-file src="src/ios/CDVInAppBrowserBg.h" />
+        <source-file src="src/ios/CDVInAppBrowserBg.m" />
         <!--resource-file src="src/ios/icon_share.jpg" target="src/ios/icon_share.jpg" /-->
         <resource-file src="src/ios/icon_share@1x~ipad.jpg" target="src/ios/icon_share@1x~ipad.jpg" />
         <resource-file src="src/ios/icon_share@2x~ipad.jpg" target="src/ios/icon_share@2x~ipad.jpg" />
@@ -236,7 +245,7 @@
         <resource-file src="src/ios/icon_arrow_left_active@2x~ipad.jpg" target="src/ios/icon_arrow_left_active@2x~ipad.jpg" />
         <resource-file src="src/ios/icon_arrow_left_active@2x~iphone.jpg" target="src/ios/icon_arrow_left_active@2x~iphone.jpg" />
         <resource-file src="src/ios/icon_arrow_left_active@3x~iphone.jpg" target="src/ios/icon_arrow_left_active@3x~iphone.jpg" />
-	    
+
         <resource-file src="src/ios/loader0001.png" target="src/ios/loader0001.png"/>
         <resource-file src="src/ios/loader0002.png" target="src/ios/loader0002.png"/>
         <resource-file src="src/ios/loader0003.png" target="src/ios/loader0003.png"/>
@@ -291,7 +300,7 @@
         <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
             <Capability Name="ID_CAP_NETWORKING"/>
         </config-file>
-                
+
         <js-module src="www/inappbrowser.js" name="inappbrowser">
             <clobbers target="cordova.InAppBrowser.open" />
             <clobbers target="window.open" />
@@ -331,7 +340,7 @@
         </js-module>
         <asset src="www/inappbrowser.css" target="css/inappbrowser.css" />
     </platform>
-  
+
     <!-- firefoxos -->
     <platform name="firefoxos">
         <config-file target="config.xml" parent="/*">
