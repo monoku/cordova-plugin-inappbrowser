@@ -240,14 +240,14 @@
 
 - (void)show:(CDVInvokedUrlCommand*)command
 {
-    if (self.inAppBrowserViewController == nil) {
-        NSLog(@"Tried to show IAB after it was closed.");
-        return;
-    }
-    if (_previousStatusBarStyle != -1) {
-        NSLog(@"Tried to show IAB while already shown");
-        return;
-    }
+    // if (self.inAppBrowserViewController == nil) {
+    //     NSLog(@"Tried to show IAB after it was closed.");
+    //     return;
+    // }
+    // if (_previousStatusBarStyle != -1) {
+    //     NSLog(@"Tried to show IAB while already shown");
+    //     return;
+    // }
 
     //    _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
 
@@ -1033,7 +1033,7 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    return NO;
+    return YES;
 }
 
 - (void)close

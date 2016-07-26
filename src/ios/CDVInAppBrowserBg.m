@@ -20,7 +20,7 @@
 #import "CDVInAppBrowserBg.h"
 #import <Cordova/CDVPluginResult.h>
 #import <Cordova/CDVUserAgentUtil.h>
-#import <Cordova/CDVJSON.h>
+// #import <Cordova/CDVJSON.h>
 #import "CDVReachability.h"
 
 #define    kInAppBrowserTargetSelf @"_self"
@@ -47,6 +47,11 @@
 {
     _previousStatusBarStyle = -1;
     _callbackIdPattern = nil;
+}
+
+- (id)settingForKey:(NSString*)key
+{
+    return [self.commandDelegate.settings objectForKey:[key lowercaseString]];
 }
 
 - (void)onReset
@@ -157,8 +162,16 @@
     }
 
     if (self.inAppBrowserViewController == nil) {
-        NSString* originalUA = [CDVUserAgentUtil originalUserAgent];
-        self.inAppBrowserViewController = [[CDVInAppBrowserViewControllerBg alloc] initWithUserAgent:originalUA prevUserAgent:[self.commandDelegate userAgent] browserOptions: browserOptions];
+        NSString* userAgent = [CDVUserAgentUtil originalUserAgent];
+        NSString* overrideUserAgent = [self settingForKey:@"OverrideUserAgent"];
+        NSString* appendUserAgent = [self settingForKey:@"AppendUserAgent"];
+        if(overrideUserAgent){
+            userAgent = overrideUserAgent;
+        }
+        if(appendUserAgent){
+            userAgent = [userAgent stringByAppendingString: appendUserAgent];
+        }
+        self.inAppBrowserViewController = [[CDVInAppBrowserViewControllerBg alloc] initWithUserAgent:userAgent prevUserAgent:[self.commandDelegate userAgent] browserOptions: browserOptions];
         self.inAppBrowserViewController.navigationDelegate = self;
 
         if ([self.viewController conformsToProtocol:@protocol(CDVScreenOrientationDelegate)]) {
@@ -229,21 +242,22 @@
 
 - (void)show:(CDVInvokedUrlCommand*)command
 {
-//    if (self.inAppBrowserViewController == nil) {
-//        NSLog(@"Tried to show IAB after it was closed.");
-//        return;
-//    }
-//    if (_previousStatusBarStyle != -1) {
-//        NSLog(@"Tried to show IAB while already shown");
-//        return;
-//    }
+    // if (self.inAppBrowserViewController == nil) {
+    //     NSLog(@"Tried to show IAB after it was closed.");
+    //     return;
+    // }
+    // if (_previousStatusBarStyle != -1) {
+    //     NSLog(@"Tried to show IAB while already shown");
+    //     return;
+    // }
 
-    _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
+    //    _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
 
     __block CDVInAppBrowserNavigationControllerBg* nav = [[CDVInAppBrowserNavigationControllerBg alloc]
                                                         initWithRootViewController:self.inAppBrowserViewController];
     nav.orientationDelegate = self.inAppBrowserViewController;
     nav.navigationBarHidden = YES;
+    nav.modalPresentationStyle = self.inAppBrowserViewController.modalPresentationStyle;
 
     if (IsAtLeastiOSVersion(@"7.0")) {
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
@@ -429,7 +443,14 @@
             [self.commandDelegate sendPluginResult:pluginResult callbackId:scriptCallbackId];
             return NO;
         }
-    } else if ((self.callbackId != nil) && isTopLevelNavigation) {
+    } 
+    //if is an app store link, let the system handle it, otherwise it fails to load it
+    else if ([[ url scheme] isEqualToString:@"itms-appss"] || [[ url scheme] isEqualToString:@"itms-apps"]) {
+        [theWebView stopLoading];
+        [self openInSystem:url];
+        return NO;
+    }
+    else if ((self.callbackId != nil) && isTopLevelNavigation) {
         // Send a loadstart event for each top-level navigation (includes redirects).
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsDictionary:@{@"type":@"loadstart", @"url":[url absoluteString]}];
@@ -1021,6 +1042,10 @@
     return UIStatusBarStyleDefault;
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 - (void)close
 {
     [CDVUserAgentUtil releaseLock:&_userAgentLockToken];
@@ -1471,6 +1496,12 @@
 
 @implementation CDVInAppBrowserNavigationControllerBg : UINavigationController
 
+- (void) dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    if ( self.presentedViewController) {
+        [super dismissViewControllerAnimated:flag completion:completion];
+    }
+}
+
 - (void) viewDidLoad {
 
     CGRect frame = [UIApplication sharedApplication].statusBarFrame;
@@ -1479,11 +1510,24 @@
 
     UIToolbar* bgToolbar = [[UIToolbar alloc] initWithFrame:frame];
     bgToolbar.barStyle = UIBarStyleDefault;
+    [bgToolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.view addSubview:bgToolbar];
 
     [super viewDidLoad];
 }
 
+- (CGRect) invertFrameIfNeeded:(CGRect)rect {
+    // We need to invert since on iOS 7 frames are always in Portrait context
+    if (!IsAtLeastiOSVersion(@"8.0")) {
+        if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            CGFloat temp = rect.size.width;
+            rect.size.width = rect.size.height;
+            rect.size.height = temp;
+        }
+        rect.origin = CGPointZero;
+    }
+    return rect;
+}
 
 #pragma mark CDVScreenOrientationDelegate
 
