@@ -925,7 +925,7 @@ public class InAppBrowser extends CordovaPlugin {
 
 
                 // Share button
-                share = new Button(cordova.getActivity());
+                share = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams shareLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 shareLayoutParams.addRule(RelativeLayout.LEFT_OF, 5);
                 shareLayoutParams.setMargins(0, 0, this.dpToPixels(10), 0);
@@ -951,7 +951,7 @@ public class InAppBrowser extends CordovaPlugin {
 
 
                 // Fav button
-                fav = new Button(cordova.getActivity());
+                fav = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams favLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 favLayoutParams.addRule(RelativeLayout.LEFT_OF, 10);
                 favLayoutParams.setMargins(0, 0, this.dpToPixels(12), 0);
@@ -988,7 +988,7 @@ public class InAppBrowser extends CordovaPlugin {
                 // fastViewContainter.setLayoutMode(View.);
                 RelativeLayout.LayoutParams fastViewContainterParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
-                activateTextModeButton = new Button(cordova.getActivity());
+                activateTextModeButton = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams activateTextModeButtonParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 activateTextModeButtonParams.addRule(RelativeLayout.ALIGN_LEFT);
                 activateTextModeButton.setLayoutParams(activateTextModeButtonParams);
