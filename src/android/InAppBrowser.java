@@ -907,12 +907,10 @@ public class InAppBrowser extends CordovaPlugin {
                 close.setId(Integer.valueOf(5));
                 int closeResId = activityRes.getIdentifier("icon_close", "drawable", cordova.getActivity().getPackageName());
                 Drawable closeIcon = activityRes.getDrawable(closeResId);
-                if (Build.VERSION.SDK_INT >= 16)
-                    close.setBackground(closeIcon);
-                else
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
                     close.setBackgroundDrawable(closeIcon);
-                close.setImageDrawable(closeIcon);
-                close.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                else
+                    close.setBackground(closeIcon);
                 back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
                 if (Build.VERSION.SDK_INT >= 16)
                     close.getAdjustViewBounds();
