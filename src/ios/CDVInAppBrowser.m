@@ -272,6 +272,30 @@
     });
 }
 
+- (void)hide:(CDVInvokedUrlCommand*)command
+{
+    if (self.inAppBrowserViewController == nil) {
+        NSLog(@"Tried to hide IAB after it was closed.");
+        return;
+
+
+    }
+    if (_previousStatusBarStyle == -1) {
+        NSLog(@"Tried to hide IAB while already hidden");
+        return;
+    }
+
+    _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
+
+    // Run later to avoid the "took a long time" log message.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.inAppBrowserViewController != nil) {
+            _previousStatusBarStyle = -1;
+            [self.viewController dismissViewControllerAnimated:YES completion:nil];
+        }
+    });
+}
+
 - (void)openInCordovaWebView:(NSURL*)url withOptions:(NSString*)options HTMLFastText:(NSString*)HTMLFastText
 {
 
@@ -292,16 +316,8 @@
 
 - (void)openInSystem:(NSURL*)url
 {
-    NSLog(@"====================openInSystem=======================");
-    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-        [[UIApplication sharedApplication] openURL:url];
-    } else { // handle any custom schemes to plugins
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
-    }
-    if (IsAtLeastiOSVersion(@"7.0")) {
-        //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
-        [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    }
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 // This is a helper method for the inject{Script|Style}{Code|File} API calls, which
