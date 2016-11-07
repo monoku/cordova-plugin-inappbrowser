@@ -375,7 +375,7 @@ public class InAppBrowser extends CordovaPlugin {
         } else {
             scriptToInject = source;
         }
-        Log.d(LOG_TAG, "MONOKU injecting: "+source);
+        LOG.d(LOG_TAG, "MONOKU injecting: "+source);
         final String finalScriptToInject = scriptToInject;
         this.cordova.getActivity().runOnUiThread(new Runnable() {
             @SuppressLint("NewApi")
@@ -389,7 +389,7 @@ public class InAppBrowser extends CordovaPlugin {
                     inAppWebView.evaluateJavascript(finalScriptToInject, null);
                     textWebView.evaluateJavascript(finalScriptToInject, null);
                 }
-                Log.d(LOG_TAG, finalScriptToInject);
+                LOG.d(LOG_TAG, finalScriptToInject);
             }
         });
     }
@@ -494,11 +494,11 @@ public class InAppBrowser extends CordovaPlugin {
             JSONObject obj = new JSONObject();
             obj.put("type", SHARE_EVENT);
             obj.put("url", this.inAppWebView.getUrl());
-            Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> SHARE");
+            LOG.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> SHARE");
             sendUpdate(obj, true);
 //            injectDeferredObject("try{window.cordovaInappBrowserShareCallBack();}catch(e){}", null);
         } catch (JSONException ex) {
-            Log.d(LOG_TAG, "Should never happen SHARE");
+            LOG.d(LOG_TAG, "Should never happen SHARE");
         }
     }
 
@@ -534,7 +534,7 @@ public class InAppBrowser extends CordovaPlugin {
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     Integer value = (Integer) animation.getAnimatedValue();
-                    // Log.d(LOG_TAG, "animating: "+value);
+                    // LOG.d(LOG_TAG, "animating: "+value);
                     fastViewContainter.getLayoutParams().height = value.intValue();
 //                    fastViewContainter.setTranslationY(-value.intValue());
 //                    fastViewContainter.requestLayout();
@@ -550,13 +550,13 @@ public class InAppBrowser extends CordovaPlugin {
 //            inAppWebView.destroy();
 //            inAppWebView.loadDataWithBaseURL(null, null, "text/html", "utf-8", null);
 //            fastViewContainter.getLayoutParams().height = 250;
-            Log.d(LOG_TAG, "=====TEXTMODE");
+            LOG.d(LOG_TAG, "=====TEXTMODE");
             JSONObject obj = new JSONObject();
             obj.put("type", TEXT_MODE);
-            Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> TEXT MODE");
+            LOG.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> TEXT MODE");
             sendUpdate(obj, true);
         } catch (JSONException ex) {
-            Log.d(LOG_TAG, "Should never happen TEXTMODE");
+            LOG.d(LOG_TAG, "Should never happen TEXTMODE");
         } finally {
 //            fastViewContainter.setVisibility(LinearLayout.GONE);
 //            fastViewContainter.startAnimation(slide);
@@ -588,8 +588,8 @@ public class InAppBrowser extends CordovaPlugin {
             sendUpdate(obj, true);
             injectDeferredObject("try{window.cordovaInappBrowserFavCallBack();}catch(e){}", null);
         } catch (Exception ex) {
-            Log.d(LOG_TAG, "Should never happen SHARE");
-            Log.d(LOG_TAG, "MONOKU, "+ ex.getMessage());
+            LOG.d(LOG_TAG, "Should never happen SHARE");
+            LOG.d(LOG_TAG, "MONOKU, "+ ex.getMessage());
         }
     }
 
@@ -614,7 +614,7 @@ public class InAppBrowser extends CordovaPlugin {
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     Integer value = (Integer) animation.getAnimatedValue();
-                    Log.d(LOG_TAG, "animating: "+value);
+                    LOG.d(LOG_TAG, "animating: "+value);
                     fastViewContainter.getLayoutParams().height = value.intValue();
     //                    fastViewContainter.setTranslationY(-value.intValue());
     //                    fastViewContainter.requestLayout();
@@ -634,7 +634,7 @@ public class InAppBrowser extends CordovaPlugin {
     //         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
     //             public void onAnimationUpdate(ValueAnimator animation) {
     //                 Integer value = (Integer) animation.getAnimatedValue();
-    //                 Log.d(LOG_TAG, "animating: "+value);
+    //                 LOG.d(LOG_TAG, "animating: "+value);
     //                 textWebView.getLayoutParams().height = value.intValue();
     // //                    fastViewContainter.setTranslationY(-value.intValue());
     // //                    fastViewContainter.requestLayout();
@@ -747,9 +747,9 @@ public class InAppBrowser extends CordovaPlugin {
                 hadwareBackButton = DEFAULT_HARDWARE_BACK;
             }
 
-            Log.d(LOG_TAG, "BEFORE " + hideFav);
-            Log.d(LOG_TAG, "BEFORE " + HIDE_FAV);
-            Log.d(LOG_TAG, "BEFORE " + features);
+            LOG.d(LOG_TAG, "BEFORE " + hideFav);
+            LOG.d(LOG_TAG, "BEFORE " + HIDE_FAV);
+            LOG.d(LOG_TAG, "BEFORE " + features);
 
             hideFav = features.get(HIDE_FAV) != null ? true : false;
 
@@ -1070,7 +1070,7 @@ public class InAppBrowser extends CordovaPlugin {
                 try {
                     int loaderResId = activityRes.getIdentifier("loader", "raw", cordova.getActivity().getPackageName());
                     stream = cordova.getActivity().getApplicationContext().getResources().openRawResource(loaderResId);
-                    Log.d(LOG_TAG, String.valueOf(stream));
+                    LOG.d(LOG_TAG, String.valueOf(stream));
                 }catch( Exception e ){
                     e.printStackTrace();
                 }
@@ -1225,9 +1225,9 @@ public class InAppBrowser extends CordovaPlugin {
      * @param status the status code to return to the JavaScript environment
      */
     private void sendUpdate(JSONObject obj, boolean keepCallback, PluginResult.Status status) {
-        Log.d(LOG_TAG, "BEFORE");
+        LOG.d(LOG_TAG, "BEFORE");
         if (callbackContext != null) {
-            Log.d(LOG_TAG, "AFTER");
+            LOG.d(LOG_TAG, "AFTER");
             PluginResult result = new PluginResult(status, obj);
             result.setKeepCallback(keepCallback);
             callbackContext.sendPluginResult(result);
@@ -1400,7 +1400,7 @@ public class InAppBrowser extends CordovaPlugin {
                     va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         public void onAnimationUpdate(ValueAnimator animation) {
                             Integer value = (Integer) animation.getAnimatedValue();
-                            Log.d(LOG_TAG, "animating: "+value);
+                            LOG.d(LOG_TAG, "animating: "+value);
                             fastViewContainter.getLayoutParams().height = value.intValue();
                             fastViewContainter.requestLayout();
                         }
