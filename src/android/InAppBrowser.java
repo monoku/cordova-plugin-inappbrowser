@@ -920,15 +920,16 @@ public class InAppBrowser extends CordovaPlugin {
                 // Close/Done button
                 ImageButton close = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 5);
+                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 close.setLayoutParams(closeLayoutParams);
                 close.setContentDescription("Close Button");
                 close.setId(Integer.valueOf(5));
                 int closeResId = activityRes.getIdentifier("icon_close", "drawable", cordova.getActivity().getPackageName());
                 Drawable closeIcon = activityRes.getDrawable(closeResId);
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-                    close.setBackgroundDrawable(closeIcon);
-
+                if (Build.VERSION.SDK_INT >= 16)
+                    closeIcon.setBackground(closeIcon);
+                else
+                    closeIcon.setBackgroundDrawable(closeIcon);
                 close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         closeDialog();
