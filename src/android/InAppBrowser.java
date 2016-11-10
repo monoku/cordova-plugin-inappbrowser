@@ -799,7 +799,7 @@ public class InAppBrowser extends CordovaPlugin {
                 backText.setLayoutParams(backTextLayoutParams);
                 // backText.setWidth(this.dpToPixels(100));
                 backText.setContentDescription("BackText Button");
-                backText.setId(Integer.valueOf(21);
+                backText.setId(Integer.valueOf(21));
                 backText.setVisibility(View.GONE);
                 int backTextResId = activityRes.getIdentifier("icon_arrow_left_active", "drawable", cordova.getActivity().getPackageName());
                 Drawable backTextIcon = activityRes.getDrawable(backTextResId);
