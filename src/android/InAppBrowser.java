@@ -37,7 +37,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -160,7 +159,7 @@ public class InAppBrowser extends CordovaPlugin {
 //            slide = AnimationUtils.loadAnimation(cordova.getActivity().getApplicationContext(), slideAnimId);
 
 
-            Log.d(LOG_TAG, "target = " + target);
+            LOG.d(LOG_TAG, "target = " + target);
 
             this.cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -168,7 +167,7 @@ public class InAppBrowser extends CordovaPlugin {
                     String result = "";
                     // SELF
                     if (SELF.equals(target)) {
-                        Log.d(LOG_TAG, "in self");
+                        LOG.d(LOG_TAG, "in self");
                         /* This code exists for compatibility between 3.x and 4.x versions of Cordova.
                          * Previously the Config class had a static method, isUrlWhitelisted(). That
                          * responsibility has been moved to the plugins, with an aggregating method in
@@ -200,7 +199,7 @@ public class InAppBrowser extends CordovaPlugin {
                         }
                         // load in webview
                         if (Boolean.TRUE.equals(shouldAllowNavigation)) {
-                            Log.d(LOG_TAG, "loading in webview");
+                            LOG.d(LOG_TAG, "loading in webview");
                             inAppWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
                             webView.loadUrl(url);
                         }
@@ -208,7 +207,7 @@ public class InAppBrowser extends CordovaPlugin {
                         else if (url.startsWith(WebView.SCHEME_TEL))
                         {
                             try {
-                                Log.d(LOG_TAG, "loading in dialer");
+                                LOG.d(LOG_TAG, "loading in dialer");
                                 Intent intent = new Intent(Intent.ACTION_DIAL);
                                 intent.setData(Uri.parse(url));
                                 cordova.getActivity().startActivity(intent);
@@ -218,18 +217,18 @@ public class InAppBrowser extends CordovaPlugin {
                         }
                         // load in InAppBrowser
                         else {
-                            Log.d(LOG_TAG, "loading in InAppBrowser");
+                            LOG.d(LOG_TAG, "loading in InAppBrowser");
                             result = showWebPage(url, features);
                         }
                     }
                     // SYSTEM
                     else if (SYSTEM.equals(target)) {
-                        Log.d(LOG_TAG, "in system");
+                        LOG.d(LOG_TAG, "in system");
                         result = openExternal(url);
                     }
                     // BLANK - or anything else
                     else {
-                        Log.d(LOG_TAG, "in blank");
+                        LOG.d(LOG_TAG, "in blank");
                         result = showWebPage(url, features);
                     }
 
@@ -336,7 +335,7 @@ public class InAppBrowser extends CordovaPlugin {
         } else {
             scriptToInject = source;
         }
-        Log.d(LOG_TAG, "MONOKU injecting: "+source);
+        LOG.d(LOG_TAG, "MONOKU injecting: "+source);
         final String finalScriptToInject = scriptToInject;
         this.cordova.getActivity().runOnUiThread(new Runnable() {
             @SuppressLint("NewApi")
@@ -350,7 +349,7 @@ public class InAppBrowser extends CordovaPlugin {
                     inAppWebView.evaluateJavascript(finalScriptToInject, null);
                     textWebView.evaluateJavascript(finalScriptToInject, null);
                 }
-                Log.d(LOG_TAG, finalScriptToInject);
+                LOG.d(LOG_TAG, finalScriptToInject);
             }
         });
     }
@@ -402,7 +401,7 @@ public class InAppBrowser extends CordovaPlugin {
             this.cordova.getActivity().startActivity(intent);
             return "";
         } catch (android.content.ActivityNotFoundException e) {
-            Log.d(LOG_TAG, "InAppBrowser: Error loading url "+url+":"+ e.toString());
+            LOG.d(LOG_TAG, "InAppBrowser: Error loading url "+url+":"+ e.toString());
             return e.toString();
         }
     }
@@ -440,7 +439,7 @@ public class InAppBrowser extends CordovaPlugin {
             obj.put("type", EXIT_EVENT);
             sendUpdate(obj, false);
         } catch (JSONException ex) {
-            Log.d(LOG_TAG, "Should never happen");
+            LOG.d(LOG_TAG, "Should never happen");
         }
     }
 
@@ -452,11 +451,11 @@ public class InAppBrowser extends CordovaPlugin {
             JSONObject obj = new JSONObject();
             obj.put("type", SHARE_EVENT);
             obj.put("url", this.inAppWebView.getUrl());
-            Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> SHARE");
+            LOG.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> SHARE");
             sendUpdate(obj, true);
 //            injectDeferredObject("try{window.cordovaInappBrowserShareCallBack();}catch(e){}", null);
         } catch (JSONException ex) {
-            Log.d(LOG_TAG, "Should never happen SHARE");
+            LOG.d(LOG_TAG, "Should never happen SHARE");
         }
     }
 
@@ -492,7 +491,7 @@ public class InAppBrowser extends CordovaPlugin {
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     Integer value = (Integer) animation.getAnimatedValue();
-                    // Log.d(LOG_TAG, "animating: "+value);
+                    // LOG.d(LOG_TAG, "animating: "+value);
                     fastViewContainter.getLayoutParams().height = value.intValue();
 //                    fastViewContainter.setTranslationY(-value.intValue());
 //                    fastViewContainter.requestLayout();
@@ -508,13 +507,13 @@ public class InAppBrowser extends CordovaPlugin {
 //            inAppWebView.destroy();
 //            inAppWebView.loadDataWithBaseURL(null, null, "text/html", "utf-8", null);
 //            fastViewContainter.getLayoutParams().height = 250;
-            Log.d(LOG_TAG, "=====TEXTMODE");
+            LOG.d(LOG_TAG, "=====TEXTMODE");
             JSONObject obj = new JSONObject();
             obj.put("type", TEXT_MODE);
-            Log.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> TEXT MODE");
+            LOG.d(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>> TEXT MODE");
             sendUpdate(obj, true);
         } catch (JSONException ex) {
-            Log.d(LOG_TAG, "Should never happen TEXTMODE");
+            LOG.d(LOG_TAG, "Should never happen TEXTMODE");
         } finally {
 //            fastViewContainter.setVisibility(LinearLayout.GONE);
 //            fastViewContainter.startAnimation(slide);
@@ -546,8 +545,8 @@ public class InAppBrowser extends CordovaPlugin {
             sendUpdate(obj, true);
             injectDeferredObject("try{window.cordovaInappBrowserFavCallBack();}catch(e){}", null);
         } catch (Exception ex) {
-            Log.d(LOG_TAG, "Should never happen SHARE");
-            Log.d(LOG_TAG, "MONOKU, "+ ex.getMessage());
+            LOG.d(LOG_TAG, "Should never happen SHARE");
+            LOG.d(LOG_TAG, "MONOKU, "+ ex.getMessage());
         }
     }
 
@@ -572,7 +571,7 @@ public class InAppBrowser extends CordovaPlugin {
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     Integer value = (Integer) animation.getAnimatedValue();
-                    Log.d(LOG_TAG, "animating: "+value);
+                    LOG.d(LOG_TAG, "animating: "+value);
                     fastViewContainter.getLayoutParams().height = value.intValue();
     //                    fastViewContainter.setTranslationY(-value.intValue());
     //                    fastViewContainter.requestLayout();
@@ -592,7 +591,7 @@ public class InAppBrowser extends CordovaPlugin {
     //         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
     //             public void onAnimationUpdate(ValueAnimator animation) {
     //                 Integer value = (Integer) animation.getAnimatedValue();
-    //                 Log.d(LOG_TAG, "animating: "+value);
+    //                 LOG.d(LOG_TAG, "animating: "+value);
     //                 textWebView.getLayoutParams().height = value.intValue();
     // //                    fastViewContainter.setTranslationY(-value.intValue());
     // //                    fastViewContainter.requestLayout();
@@ -700,9 +699,9 @@ public class InAppBrowser extends CordovaPlugin {
             if (hardwareBack != null) {
                 hadwareBackButton = hardwareBack.booleanValue();
             }
-            Log.d(LOG_TAG, "BEFORE " + hideFav);
-            Log.d(LOG_TAG, "BEFORE " + HIDE_FAV);
-            Log.d(LOG_TAG, "BEFORE " + features);
+            LOG.d(LOG_TAG, "BEFORE " + hideFav);
+            LOG.d(LOG_TAG, "BEFORE " + HIDE_FAV);
+            LOG.d(LOG_TAG, "BEFORE " + features);
             hideFav = features.get(HIDE_FAV) != null ? true : false;
         }
 
@@ -1003,7 +1002,7 @@ public class InAppBrowser extends CordovaPlugin {
                 try {
                     int loaderResId = activityRes.getIdentifier("loader", "raw", cordova.getActivity().getPackageName());
                     stream = cordova.getActivity().getApplicationContext().getResources().openRawResource(loaderResId);
-                    Log.d(LOG_TAG, String.valueOf(stream));
+                    LOG.d(LOG_TAG, String.valueOf(stream));
                 }catch( Exception e ){
                     e.printStackTrace();
                 }
@@ -1142,9 +1141,9 @@ public class InAppBrowser extends CordovaPlugin {
      * @param status the status code to return to the JavaScript environment
      */
     private void sendUpdate(JSONObject obj, boolean keepCallback, PluginResult.Status status) {
-        Log.d(LOG_TAG, "BEFORE");
+        LOG.d(LOG_TAG, "BEFORE");
         if (callbackContext != null) {
-            Log.d(LOG_TAG, "AFTER");
+            LOG.d(LOG_TAG, "AFTER");
             PluginResult result = new PluginResult(status, obj);
             result.setKeepCallback(keepCallback);
             callbackContext.sendPluginResult(result);
@@ -1236,30 +1235,26 @@ public class InAppBrowser extends CordovaPlugin {
         }
 
         public void animateView(){
-            if (!didLoad){
-                didLoad = true;
-                if( !textModeActivated ) {
-                    LOG.d("InAppChromeClient", "animateeeeeeee");
-                    textWebView.setVisibility(View.GONE);
-                    ValueAnimator va = ValueAnimator.ofInt(fastViewContainter.getHeight(), 0);
-                    va.setDuration(250);
-                    va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            Integer value = (Integer) animation.getAnimatedValue();
-                            Log.d(LOG_TAG, "animating: "+value);
-                            fastViewContainter.getLayoutParams().height = value.intValue();
-                            fastViewContainter.requestLayout();
-                        }
-                    });
-                    va.start();
-                    showAllButtons();
-                }
+            if( !textModeActivated ) {
+                textWebView.setVisibility(View.GONE);
+                ValueAnimator va = ValueAnimator.ofInt(fastViewContainter.getHeight(), 0);
+                va.setDuration(250);
+                va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        Integer value = (Integer) animation.getAnimatedValue();
+                        fastViewContainter.getLayoutParams().height = value.intValue();
+                        fastViewContainter.requestLayout();
+                    }
+                });
+                va.start();
+                showAllButtons();
             }
         }
 
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-
+            
+            didLoad = true;
             this.animateView();
 
             try {
@@ -1269,7 +1264,7 @@ public class InAppBrowser extends CordovaPlugin {
 
                 sendUpdate(obj, true);
             } catch (JSONException ex) {
-                Log.d(LOG_TAG, "Should never happen");
+                LOG.d(LOG_TAG, "Should never happen");
             }
 
             Drawable backIcon;
@@ -1317,7 +1312,7 @@ public class InAppBrowser extends CordovaPlugin {
 
                 sendUpdate(obj, true, PluginResult.Status.ERROR);
             } catch (JSONException ex) {
-                Log.d(LOG_TAG, "Should never happen");
+                LOG.d(LOG_TAG, "Should never happen");
             }
         }
         
