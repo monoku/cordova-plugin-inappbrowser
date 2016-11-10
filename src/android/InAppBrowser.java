@@ -586,8 +586,6 @@ public class InAppBrowser extends CordovaPlugin {
             LOG.d(LOG_TAG, "Should never happen SHARE");
             LOG.d(LOG_TAG, "MONOKU, "+ ex.getMessage());
         }
-=======
->>>>>>> 1.5.0
     }
 
     /**
