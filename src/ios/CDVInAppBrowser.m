@@ -292,21 +292,8 @@
 
 - (void)openInSystem:(NSURL*)url
 {
-<<<<<<< HEAD
-    NSLog(@"====================openInSystem=======================");
-    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-        [[UIApplication sharedApplication] openURL:url];
-    } else { // handle any custom schemes to plugins
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
-    }
-    if (IsAtLeastiOSVersion(@"7.0")) {
-        //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
-        [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    }
-=======
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
     [[UIApplication sharedApplication] openURL:url];
->>>>>>> 1.5.0
 }
 
 // This is a helper method for the inject{Script|Style}{Code|File} API calls, which
