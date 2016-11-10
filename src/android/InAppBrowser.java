@@ -927,9 +927,9 @@ public class InAppBrowser extends CordovaPlugin {
                 int closeResId = activityRes.getIdentifier("icon_close", "drawable", cordova.getActivity().getPackageName());
                 Drawable closeIcon = activityRes.getDrawable(closeResId);
                 if (Build.VERSION.SDK_INT >= 16)
-                    closeIcon.setBackground(closeIcon);
+                    close.setBackground(closeIcon);
                 else
-                    closeIcon.setBackgroundDrawable(closeIcon);
+                    close.setBackgroundDrawable(closeIcon);
                 close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         closeDialog();
