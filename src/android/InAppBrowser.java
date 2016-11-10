@@ -804,7 +804,7 @@ public class InAppBrowser extends CordovaPlugin {
                 RelativeLayout actionButtonContainer = new RelativeLayout(cordova.getActivity());
                 actionButtonContainer.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
                 actionButtonContainer.setHorizontalGravity(Gravity.LEFT);
-                actionButtonContainer.setVerticalGravity(Gravity.CENTER_VERTICAL);
+                actionButtonContainer.setVerticalGravity(Gravity.TOP);
                 actionButtonContainer.setId(Integer.valueOf(1));
 
                 // Action Button Container layout
@@ -830,20 +830,11 @@ public class InAppBrowser extends CordovaPlugin {
                     back.setBackground(backIcon);
                 else
                     back.setBackgroundDrawable(backIcon);
-                back.setImageDrawable(backIcon);
-                back.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
-                if (Build.VERSION.SDK_INT >= 16)
-                    back.getAdjustViewBounds();
-
                 back.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         goBack();
                     }
                 });
-
-
-
 
                 // Back button
                 backText = new ImageButton(cordova.getActivity());
@@ -856,14 +847,10 @@ public class InAppBrowser extends CordovaPlugin {
                 backText.setVisibility(View.GONE);
                 int backTextResId = activityRes.getIdentifier("icon_arrow_left_active", "drawable", cordova.getActivity().getPackageName());
                 Drawable backTextIcon = activityRes.getDrawable(backTextResId);
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-                {
-                    backText.setBackgroundDrawable(backTextIcon);
-                }
-                else
-                {
+                if (Build.VERSION.SDK_INT >= 16)
                     backText.setBackground(backTextIcon);
-                }
+                else
+                    backText.setBackgroundDrawable(backTextIcon);
                 backText.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         goBackText();
@@ -887,12 +874,6 @@ public class InAppBrowser extends CordovaPlugin {
                     forward.setBackground(fwdIcon);
                 else
                     forward.setBackgroundDrawable(fwdIcon);
-                forward.setImageDrawable(fwdIcon);
-                forward.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                forward.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
-                if (Build.VERSION.SDK_INT >= 16)
-                    forward.getAdjustViewBounds();
-
                 forward.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         goForward();
@@ -902,7 +883,6 @@ public class InAppBrowser extends CordovaPlugin {
                 // Edit Text Box
                 edittext = new EditText(cordova.getActivity());
                 RelativeLayout.LayoutParams textLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                textLayoutParams.addRule(RelativeLayout.RIGHT_OF, 1);
                 textLayoutParams.addRule(RelativeLayout.LEFT_OF, 5);
                 edittext.setLayoutParams(textLayoutParams);
                 edittext.setId(Integer.valueOf(4));
@@ -924,8 +904,8 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Close/Done button
                 ImageButton close = new ImageButton(cordova.getActivity());
-                RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 5);
                 close.setLayoutParams(closeLayoutParams);
                 close.setContentDescription("Close Button");
                 close.setId(Integer.valueOf(5));
@@ -935,11 +915,9 @@ public class InAppBrowser extends CordovaPlugin {
                     close.setBackground(closeIcon);
                 else
                     close.setBackgroundDrawable(closeIcon);
-                close.setImageDrawable(closeIcon);
-                close.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
-                if (Build.VERSION.SDK_INT >= 16)
-                    close.getAdjustViewBounds();
+                // back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
+                // if (Build.VERSION.SDK_INT >= 16)
+                //     close.getAdjustViewBounds();
 
                 close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -1318,7 +1296,9 @@ public class InAppBrowser extends CordovaPlugin {
             // Update the UI if we haven't already
             if (!newloc.equals(edittext.getText().toString())) {
                 edittext.setText(newloc);
-             }
+            }
+
+            this.updateBackAndForwardBtns();
 
             try {
                 JSONObject obj = new JSONObject();
@@ -1329,8 +1309,6 @@ public class InAppBrowser extends CordovaPlugin {
                 LOG.e(LOG_TAG, "URI passed in has caused a JSON error.");
             }
         }
-
-
 
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
@@ -1345,6 +1323,8 @@ public class InAppBrowser extends CordovaPlugin {
                 CookieSyncManager.getInstance().sync();
             }
 
+            this.updateBackAndForwardBtns();
+
             try {
                 JSONObject obj = new JSONObject();
                 obj.put("type", LOAD_STOP_EVENT);
@@ -1354,7 +1334,9 @@ public class InAppBrowser extends CordovaPlugin {
             } catch (JSONException ex) {
                 LOG.d(LOG_TAG, "Should never happen");
             }
+        }
 
+        public void updateBackAndForwardBtns() {
             Drawable backIcon;
             Drawable forwardIcon;
             int backResId;
