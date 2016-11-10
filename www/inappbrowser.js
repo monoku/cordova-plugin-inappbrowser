@@ -31,30 +31,19 @@
     var modulemapper = require('cordova/modulemapper');
     var urlutil = require('cordova/urlutil');
 
-<<<<<<< HEAD
-function InAppBrowser() {
-   this.channels = {
-        'loadstart': channel.create('loadstart'),
-        'loadstop' : channel.create('loadstop'),
-        'loaderror' : channel.create('loaderror'),
-        'exit' : channel.create('exit'),
-        'share' : channel.create('share'),
-        'fav' : channel.create('fav')
-   };
-}
-=======
     function InAppBrowser() {
        this.channels = {
             'loadstart': channel.create('loadstart'),
             'loadstop' : channel.create('loadstop'),
             'loaderror' : channel.create('loaderror'),
-            'exit' : channel.create('exit')
+            'exit' : channel.create('exit'),
+            'share' : channel.create('share'),
+            'fav' : channel.create('fav')
        };
     }
->>>>>>> 1.5.0
 
     InAppBrowser.prototype = {
-        _eventHandler: function (event) {
+         _eventHandler: function (event) {
             if (event && (event.type in this.channels)) {
                 this.channels[event.type].fire(event);
             }
@@ -95,21 +84,9 @@ function InAppBrowser() {
                 throw new Error('insertCSS requires exactly one of code or file to be specified');
             }
         }
-<<<<<<< HEAD
     }
-};
-
-module.exports = function(strUrl, strWindowName, strWindowFeatures, callbacks, HTMLFastText) {
-    // Don't catch calls that write to existing frames (e.g. named iframes).
-    if (window.frames && window.frames[strWindowName]) {
-        var origOpenFunc = modulemapper.getOriginalSymbol(window, 'open');
-        return origOpenFunc.apply(window, arguments);
-    }
-=======
-    };
->>>>>>> 1.5.0
-
-    module.exports = function(strUrl, strWindowName, strWindowFeatures, callbacks) {
+    
+    module.exports = function(strUrl, strWindowName, strWindowFeatures, callbacks, HTMLFastText) {
         // Don't catch calls that write to existing frames (e.g. named iframes).
         if (window.frames && window.frames[strWindowName]) {
             var origOpenFunc = modulemapper.getOriginalSymbol(window, 'open');
@@ -128,15 +105,9 @@ module.exports = function(strUrl, strWindowName, strWindowFeatures, callbacks, H
            iab._eventHandler(eventname);
         };
 
-<<<<<<< HEAD
-    exec(cb, cb, "InAppBrowser", "open", [strUrl, strWindowName, strWindowFeatures, HTMLFastText]);
-    return iab;
-};
-=======
         strWindowFeatures = strWindowFeatures || "";
->>>>>>> 1.5.0
 
-        exec(cb, cb, "InAppBrowser", "open", [strUrl, strWindowName, strWindowFeatures]);
+        exec(cb, cb, "InAppBrowser", "open", [strUrl, strWindowName, strWindowFeatures, HTMLFastText]);
         return iab;
     };
 })();
