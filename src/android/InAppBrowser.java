@@ -1008,16 +1008,16 @@ public class InAppBrowser extends CordovaPlugin {
                         textMode();
                     }
                 });
-                fastViewContainter.addView(activateTextModeButton);
+                // fastViewContainter.addView(activateTextModeButton);
 
                 TextView fastText = new TextView(cordova.getActivity());
-                fastText.setText("Tap Offline View to see content faster.");
+                fastText.setText("");
                 fastText.setTextColor(Color.parseColor("#004251"));
                 fastText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
                 fastText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 fastText.setGravity(Gravity.CENTER);
                 LinearLayout.LayoutParams ftlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                ftlp.setMargins(0, 0, 0, 20);
+                ftlp.setMargins(0, 240, 0, 20);
                 fastText.setLayoutParams(ftlp);
                 fastViewContainter.addView(fastText);
 
