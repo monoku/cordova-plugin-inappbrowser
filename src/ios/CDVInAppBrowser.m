@@ -1059,6 +1059,9 @@
 
 - (void)close
 {
+    // Dispatch touch close event here
+    [self.navigationDelegate.commandDelegate evalJs:@"cordova.fireDocumentEvent('in-app-browser-touch-close')"];
+
     [CDVUserAgentUtil releaseLock:&_userAgentLockToken];
     self.currentURL = nil;
 
