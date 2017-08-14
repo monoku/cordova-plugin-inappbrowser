@@ -1031,7 +1031,7 @@ public class InAppBrowser extends CordovaPlugin {
                 }
                 GifMovieView gifView = new GifMovieView(cordova.getActivity().getApplicationContext(), stream);
                 gifView.setLayoutParams(new LinearLayout.LayoutParams(5, 5));
-                fastViewContainter.addView(gifView);
+                // fastViewContainter.addView(gifView);
 
 
 
