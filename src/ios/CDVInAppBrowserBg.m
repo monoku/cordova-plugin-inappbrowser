@@ -797,7 +797,7 @@
 
     [self.toolbar setItems:@[flexibleSpaceButton, self.closeButton, negativeSpacer]];
 
-    [self.toolbarText addSubview:loader];
+    // [self.toolbarText addSubview:loader];
 
     //    [self.textButton setCenter:self.toolbarText.center];
 
