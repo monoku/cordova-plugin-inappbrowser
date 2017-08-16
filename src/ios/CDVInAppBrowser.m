@@ -1311,14 +1311,14 @@
 {
     // loading url, start spinner, update back/forward
 
-    NSLog(@"=======now================");
-    [NSTimer scheduledTimerWithTimeInterval:1.5
-                                     target:self
-                                   selector:@selector(showWebView)
-                                   userInfo:nil
-                                    repeats:NO];
+    // NSLog(@"=======now================");
+    // [NSTimer scheduledTimerWithTimeInterval:1.5
+    //                                  target:self
+    //                                selector:@selector(showWebView)
+    //                                userInfo:nil
+    //                                 repeats:NO];
 
-    //[self showWebView];
+    [self showWebView];
 
     self.addressLabel.text = NSLocalizedString(@"Loading...", nil);
     self.backButton.enabled = theWebView.canGoBack;
