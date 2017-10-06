@@ -863,14 +863,14 @@
     if (_browserOptions.hidefav != nil) {
         if (self.textModeActivated) {
             [self.toolbar setItems:@[negativeSpacerLarge, self.backButtonText, flexibleSpaceButton, self.shareButton, fixedSpaceButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
-        }else{
+        } else {
             [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
         }
-    }else{
+    } else {
         if (self.textModeActivated) {
-            [self.toolbar setItems:@[negativeSpacerLarge, self.backButtonText, flexibleSpaceButton, self.favButton, fixedSpaceButton, self.shareButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
-        }else{
-            [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.favButton, fixedSpaceButton, self.shareButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+            [self.toolbar setItems:@[negativeSpacerLarge, self.backButtonText, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
+        } else {
+            [self.toolbar setItems:@[negativeSpacerLarge, self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.shareButton, fixedSpaceButton, self.favButton, fixedSpaceButton, self.closeButton, negativeSpacer]];
         }
     }
 
