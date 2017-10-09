@@ -872,8 +872,6 @@ public class InAppBrowser extends CordovaPlugin {
                     }
                 });
 
-
-
                 // Forward button
                 forward = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams forwardLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -936,43 +934,43 @@ public class InAppBrowser extends CordovaPlugin {
                     }
                 });
 
-                // Share button
-                share = new ImageButton(cordova.getActivity());
+                // Fav button
+                fav = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams shareLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 shareLayoutParams.addRule(RelativeLayout.LEFT_OF, 5);
                 shareLayoutParams.setMargins(0, 0, this.dpToPixels(10), 0);
-                share.setLayoutParams(shareLayoutParams);
-                share.setContentDescription("Share Button");
-                share.setId(Integer.valueOf(10));
-                share.setVisibility(View.GONE);
-                int shareResId = activityRes.getIdentifier("icon_share", "drawable", cordova.getActivity().getPackageName());
+                fav.setLayoutParams(shareLayoutParams);
+                fav.setContentDescription("Fav Button");
+                fav.setId(Integer.valueOf(10));
+                fav.setVisibility(View.GONE);
+                int shareResId = activityRes.getIdentifier("icon_fav", "drawable", cordova.getActivity().getPackageName());
                 Drawable shareIcon = activityRes.getDrawable(shareResId);
                 if (Build.VERSION.SDK_INT >= 16)
-                    share.setBackground(shareIcon);
+                    fav.setBackground(shareIcon);
                 else
-                    share.setBackgroundDrawable(shareIcon);
-                share.setOnClickListener(new View.OnClickListener() {
+                    fav.setBackgroundDrawable(shareIcon);
+                fav.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         sharePage();
                     }
                 });
 
-                // Fav button
-                fav = new ImageButton(cordova.getActivity());
+                // Share button
+                share = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams favLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 favLayoutParams.addRule(RelativeLayout.LEFT_OF, 10);
                 favLayoutParams.setMargins(0, 0, this.dpToPixels(12), 0);
-                fav.setLayoutParams(favLayoutParams);
-                fav.setContentDescription("Fav Button");
-                fav.setId(Integer.valueOf(9));
-                fav.setVisibility(View.GONE);
-                int favResId = activityRes.getIdentifier("icon_fav", "drawable", cordova.getActivity().getPackageName());
+                share.setLayoutParams(favLayoutParams);
+                share.setContentDescription("Share Button");
+                share.setId(Integer.valueOf(9));
+                share.setVisibility(View.GONE);
+                int favResId = activityRes.getIdentifier("icon_share", "drawable", cordova.getActivity().getPackageName());
                 Drawable favIcon = activityRes.getDrawable(favResId);
                 if (Build.VERSION.SDK_INT >= 16)
-                    fav.setBackground(favIcon);
+                    share.setBackground(favIcon);
                 else
-                    fav.setBackgroundDrawable(favIcon);
-                fav.setOnClickListener(new View.OnClickListener() {
+                    share.setBackgroundDrawable(favIcon);
+                share.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         favPage();
                     }
@@ -1111,8 +1109,8 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Add the back and forward buttons to our action button container layout
                 secondButtonContainer.addView(close);
-                if( hideFav ){
-                    fav.setVisibility(View.GONE);
+                if (hideFav) {
+                    share.setVisibility(View.GONE);
                 }
                 secondButtonContainer.addView(fav);
                 secondButtonContainer.addView(share);
