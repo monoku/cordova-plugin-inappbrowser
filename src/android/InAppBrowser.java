@@ -1114,8 +1114,8 @@ public class InAppBrowser extends CordovaPlugin {
                 if( hideFav ){
                     fav.setVisibility(View.GONE);
                 }
-                secondButtonContainer.addView(share);
                 secondButtonContainer.addView(fav);
+                secondButtonContainer.addView(share);
 
                 // Add the views to our toolbar
                 toolbar.addView(actionButtonContainer);
