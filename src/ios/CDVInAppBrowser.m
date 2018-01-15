@@ -1120,7 +1120,7 @@
     // [self.toolbarText setHidden:NO];
     // [self.toolbarText removeFromSuperview];
     // [self.view addSubview:self.toolbarText];
-    [UIView animateWithDuration:0.25 animations:^{
+    [UIView animateWithDuration:0.0 animations:^{
         [self.textWebView setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
         // [self.toolbarText setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, self.textWebView.frame.size.width)];
     } completion:^(BOOL finished) {
@@ -1154,7 +1154,7 @@
 
         // [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.textWebView.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
         //NSInteger height = self.toolbarText.frame.size.height;
-        [UIView animateWithDuration:0.25 animations:^{
+        [UIView animateWithDuration:0.0 animations:^{
             [self.textWebView setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
         } completion:^(BOOL finished) {
         }];
