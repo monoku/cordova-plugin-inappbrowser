@@ -194,7 +194,6 @@
         }
     }
     self.inAppBrowserViewController.modalPresentationStyle = presentationStyle;
-    [self.view setBackgroundColor:[UIColor whiteColor]];
 
     // Set Transition Style
     UIModalTransitionStyle transitionStyle = UIModalTransitionStyleCoverVertical; // default
@@ -264,7 +263,7 @@
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
-    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor white];
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [[UIImage imageNamed:@"fondo.jpg"];
 
     __weak CDVInAppBrowserBg* weakSelf = self;
 
@@ -666,7 +665,7 @@
     //    self.toolbarText.tintColor = [UIColor colorWithRed:0.94 green:0.94 blue:0.94 alpha:1];
     //    self.toolbarText.barTintColor = [UIColor colorWithRed:0.94 green:0.94 blue:0.94 alpha:1];
     //    self.toolbarText.translucent = NO;
-    [self.toolbarText setBackgroundColor:[UIColor colorWithRed:0.94 green:0.94 blue:0.94 alpha:1]]
+    [self.toolbarText setBackgroundColor:[UIColor colorWithRed:0.94 green:0.94 blue:0.94 alpha:1]];
     self.toolbarText.clearsContextBeforeDrawing = NO;
     self.toolbarText.clipsToBounds = YES;
     self.toolbarText.contentMode = UIViewContentModeScaleToFill;

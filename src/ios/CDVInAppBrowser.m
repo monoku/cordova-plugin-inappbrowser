@@ -191,7 +191,6 @@
             presentationStyle = UIModalPresentationFormSheet;
         }
     }
-    [self.view setBackgroundColor:[UIColor whiteColor]];
     self.inAppBrowserViewController.modalPresentationStyle = presentationStyle;
 
     // Set Transition Style
@@ -262,7 +261,7 @@
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
-    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor white];
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [[UIImage imageNamed:@"fondo.jpg"];
 
     __weak CDVInAppBrowser* weakSelf = self;
 
