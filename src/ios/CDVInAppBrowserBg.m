@@ -194,6 +194,7 @@
         }
     }
     self.inAppBrowserViewController.modalPresentationStyle = presentationStyle;
+    [self.view setBackgroundColor:[UIColor whiteColor]];
 
     // Set Transition Style
     UIModalTransitionStyle transitionStyle = UIModalTransitionStyleCoverVertical; // default
@@ -263,6 +264,7 @@
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor white];
 
     __weak CDVInAppBrowserBg* weakSelf = self;
 
@@ -512,7 +514,7 @@
         }
     }
 
-    _previousStatusBarStyle = -1; // this value was reset before reapplying it. caused statusbar to stay black on ios7
+    _previousStatusBarStyle = -1; // this value was reset before reapplying it. caused statusbar to stay webView on ios7
 }
 
 @end
@@ -664,7 +666,7 @@
     //    self.toolbarText.tintColor = [UIColor colorWithRed:0.94 green:0.94 blue:0.94 alpha:1];
     //    self.toolbarText.barTintColor = [UIColor colorWithRed:0.94 green:0.94 blue:0.94 alpha:1];
     //    self.toolbarText.translucent = NO;
-    [self.toolbarText setBackgroundColor:[UIColor colorWithRed:0.94 green:0.94 blue:0.94 alpha:1]];
+    [self.toolbarText setBackgroundColor:[UIColor colorWithRed:0.94 green:0.94 blue:0.94 alpha:1]]
     self.toolbarText.clearsContextBeforeDrawing = NO;
     self.toolbarText.clipsToBounds = YES;
     self.toolbarText.contentMode = UIViewContentModeScaleToFill;
@@ -801,7 +803,7 @@
 
     //    [self.textButton setCenter:self.toolbarText.center];
 
-    self.view.backgroundColor = [UIColor grayColor];
+    self.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.248 blue:0.317 alpha:1];
 
     [self.view addSubview:self.toolbar];
     [self.view addSubview:self.addressLabel];

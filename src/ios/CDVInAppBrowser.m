@@ -191,6 +191,7 @@
             presentationStyle = UIModalPresentationFormSheet;
         }
     }
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     self.inAppBrowserViewController.modalPresentationStyle = presentationStyle;
 
     // Set Transition Style
@@ -261,6 +262,7 @@
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor white];
 
     __weak CDVInAppBrowser* weakSelf = self;
 
@@ -815,7 +817,7 @@
 
     //    [self.textButton setCenter:self.toolbarText.center];
 
-    self.view.backgroundColor = [UIColor grayColor];
+    self.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.248 blue:0.317 alpha:1];
 
     [self.view addSubview:self.toolbar];
     [self.view addSubview:self.addressLabel];
