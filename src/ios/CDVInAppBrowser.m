@@ -33,6 +33,7 @@
 #define    TOOLBAR_HEIGHT 56
 #define    LOCATIONBAR_HEIGHT 0//21.0
 #define    FOOTER_HEIGHT 0//((TOOLBAR_HEIGHT) + (LOCATIONBAR_HEIGHT))
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 #pragma mark CDVInAppBrowser
 
@@ -216,6 +217,7 @@
             }
         }
     }
+   
 
     // UIWebView options
     self.inAppBrowserViewController.webView.scalesPageToFit = browserOptions.enableviewportscale;
@@ -232,7 +234,11 @@
     }
 
     [self.inAppBrowserViewController navigateTo:url HTMLFastText:HTMLFastText];
-
+    if (browserOptions.color != nil) {
+        
+    [UIApplication sharedApplication].delegate.window.backgroundColor = UIColorFromRGB((UInt64)strtoull([browserOptions.color UTF8String], NULL, 16)
+                                                                                                                                               );
+    }
     if (!browserOptions.hidden) {
         [self show:nil];
     }
@@ -261,11 +267,8 @@
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
-    // [UIApplication sharedApplication].delegate.window.backgroundColor = [[UIImage imageNamed:@"fondo.jpg"];
-
-    UIImageView* background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
-    background.image = [UIImage imageNamed:@"fondo.jpg"];
-    [self.window addSubview:background];
+    
+    
 
     __weak CDVInAppBrowser* weakSelf = self;
 
@@ -592,6 +595,18 @@
     self.toolbar.multipleTouchEnabled = NO;
     self.toolbar.opaque = NO;
     self.toolbar.userInteractionEnabled = YES;
+    
+    //Fondo.
+    
+    NSURL *urlbackground = [NSURL URLWithString:@"https://image.ibb.co/jzdwCR/6f18a4e1_a8b8_4480_a369_be5d9bb039b7.png"];
+    
+    NSData *data = [NSData dataWithContentsOfURL:urlbackground];
+    
+    UIImageView* background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    //    background.tag = 0;
+    background.image = [UIImage imageWithData:data];
+    [self.webView addSubview:background];
+    
 
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - 55)];
     self.webView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
@@ -813,15 +828,15 @@
                                        initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
                                        target:nil action:nil];
     negativeSpacer.width = -5;
-
+    
+    
     [self.toolbar setItems:@[flexibleSpaceButton, self.closeButton, negativeSpacer]];
 
     // [self.toolbarText addSubview:loader];
 
     //    [self.textButton setCenter:self.toolbarText.center];
-
+    
     self.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.248 blue:0.317 alpha:1];
-
     [self.view addSubview:self.toolbar];
     [self.view addSubview:self.addressLabel];
 
@@ -829,7 +844,8 @@
     [self.view addSubview:self.spinner];
     [self.view addSubview:self.toolbarText];
     [self.view addSubview:self.textWebView];
-
+    
+//    [[UIApplication sharedApplication].delegate.window addSubview:background];
 }
 
 -(void) showWebView {
@@ -1461,6 +1477,7 @@
         // default values
         self.location = YES;
         self.toolbar = YES;
+        self.color = nil;
         self.closebuttoncaption = nil;
         self.toolbarposition = kInAppBrowserToolbarBarPositionTop;
         self.clearcache = NO;
@@ -1538,7 +1555,6 @@
     bgToolbar.barStyle = UIBarStyleDefault;
     [bgToolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.view addSubview:bgToolbar];
-
     [super viewDidLoad];
 }
 
