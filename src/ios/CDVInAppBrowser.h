@@ -59,6 +59,7 @@
 @property (nonatomic, copy) NSString* presentationstyle;
 @property (nonatomic, copy) NSString* transitionstyle;
 @property (nonatomic, copy) NSString* color;
+@property (nonatomic, copy) NSString* urlImagen;
 
 @property (nonatomic, assign) BOOL enableviewportscale;
 @property (nonatomic, assign) BOOL mediaplaybackrequiresuseraction;
