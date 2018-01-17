@@ -263,7 +263,10 @@
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
-    [UIApplication sharedApplication].delegate.window.backgroundColor = [[UIImage imageNamed:@"fondo.jpg"];
+    // [UIApplication sharedApplication].delegate.window.backgroundColor = [[UIImage imageNamed:@"fondo.jpg"];
+    UIImageView* background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+    background.image = [UIImage imageNamed:@"fondo.jpg"];
+    [self.window addSubview:background];
 
     __weak CDVInAppBrowserBg* weakSelf = self;
 
