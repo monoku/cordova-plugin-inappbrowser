@@ -239,6 +239,33 @@
 //    [UIApplication sharedApplication].delegate.window.backgroundColor = UIColorFromRGB((UInt64)strtoull([browserOptions.color UTF8String], NULL, 16)
 //                                                                                       );
 //  }
+    // Browser background.
+    
+    NSLog(@"-------------------Browser background--------------------------");
+    
+  if (browserOptions.background != nil) {
+        NSURL *urlbackground = [NSURL URLWithString: browserOptions.background ];
+        
+        NSData *data = [NSData dataWithContentsOfURL: urlbackground];
+    
+        UIImage* background2 = [UIImage imageWithData:data];
+        
+        UIImage *scaledImage = [UIImage imageWithCGImage:[background2 CGImage]
+                                                   scale:(background2.scale * 1.5)
+                                             orientation:(background2.imageOrientation)];
+        [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor colorWithPatternImage:scaledImage];
+  } else {
+      NSURL *urlbackground = [NSURL URLWithString: @"https://staging.newstand.com/media/background_images/background2.jpg"];
+
+      NSData *data = [NSData dataWithContentsOfURL:urlbackground];
+
+      UIImage* background2 = [UIImage imageWithData:data];
+
+      UIImage *scaledImage = [UIImage imageWithCGImage:[background2 CGImage]
+                                                 scale:(background2.scale * 1.5)
+                                           orientation:(background2.imageOrientation)];
+      [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor colorWithPatternImage:scaledImage];
+  }
   if (!browserOptions.hidden) {
     [self show:nil];
   }
@@ -816,24 +843,6 @@
                                      initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
                                      target:nil action:nil];
   negativeSpacer.width = -5;
-  
-  // Browser background.
-  if (browserOptions.urlImagen != nil) {
-    NSURL *urlbackground = [NSURL URLWithString:browserOptions.urlImagen];
-    
-    NSData *data = [NSData dataWithContentsOfURL:urlbackground];
-    
-    UIImageView* background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    //    background.tag = 0;
-    background.image = [UIImage imageWithData:data];
-
-    UIImage* background2 = [UIImage imageWithData:data];
-    
-    UIImage *scaledImage = [UIImage imageWithCGImage:[background2 CGImage]
-                        scale:(background2.scale * 1.5)
-                    orientation:(background2.imageOrientation)];
-    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor colorWithPatternImage:scaledImage];
-  }
   
   [self.toolbar setItems:@[flexibleSpaceButton, self.closeButton, negativeSpacer]];
   
@@ -1480,7 +1489,6 @@
     self.location = YES;
     self.toolbar = YES;
     self.color = nil;
-    self.urlImagen = nil;
     self.closebuttoncaption = nil;
     self.toolbarposition = kInAppBrowserToolbarBarPositionTop;
     self.clearcache = NO;
@@ -1495,7 +1503,6 @@
     self.disallowoverscroll = NO;
     self.hidefav = NO;
   }
-  
   return self;
 }
 
