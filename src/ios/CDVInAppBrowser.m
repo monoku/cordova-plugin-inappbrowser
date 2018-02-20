@@ -20,8 +20,8 @@
 #import "CDVInAppBrowser.h"
 #import <Cordova/CDVPluginResult.h>
 #import <Cordova/CDVUserAgentUtil.h>
-// #import <Cordova/CDVJSON.h>
 #import "CDVReachability.h"
+#import "CDVInAppBrowserAnimator.h"
 
 #define    kInAppBrowserTargetSelf @"_self"
 #define    kInAppBrowserTargetSystem @"_system"
@@ -31,8 +31,8 @@
 #define    kInAppBrowserToolbarBarPositionTop @"top"
 
 #define    TOOLBAR_HEIGHT 56
-#define    LOCATIONBAR_HEIGHT 0//21.0
-#define    FOOTER_HEIGHT 0//((TOOLBAR_HEIGHT) + (LOCATIONBAR_HEIGHT))
+#define    LOCATIONBAR_HEIGHT 0
+#define    FOOTER_HEIGHT 0
 
 #pragma mark CDVInAppBrowser
 
@@ -102,9 +102,7 @@
 #endif
 
         NSURL* absoluteUrl = [[NSURL URLWithString:url relativeToURL:baseUrl] absoluteURL];
-        //        [self.inAppBrowserViewController.textWebView.loadRequest request];
-        //        [self.webView loadHTMLString:HTMLFastText baseURL:nil];
-        //        [self.inAppBrowserViewController.textWebView loadData:HTMLFastText MIMEType: @"text/html" textEncodingName: @"UTF-8" baseURL:nil];
+
         if ([self isSystemUrl:absoluteUrl]) {
             NSLog(@"-------------------isSystemUrl--------------------------");
             target = kInAppBrowserTargetSystem;
@@ -182,27 +180,6 @@
     if (browserOptions.closebuttoncaption != nil) {
         [self.inAppBrowserViewController setCloseButtonTitle:browserOptions.closebuttoncaption];
     }
-    // Set Presentation Style
-    UIModalPresentationStyle presentationStyle = UIModalPresentationFullScreen; // default
-    if (browserOptions.presentationstyle != nil) {
-        if ([[browserOptions.presentationstyle lowercaseString] isEqualToString:@"pagesheet"]) {
-            presentationStyle = UIModalPresentationPageSheet;
-        } else if ([[browserOptions.presentationstyle lowercaseString] isEqualToString:@"formsheet"]) {
-            presentationStyle = UIModalPresentationFormSheet;
-        }
-    }
-    self.inAppBrowserViewController.modalPresentationStyle = presentationStyle;
-
-    // Set Transition Style
-    UIModalTransitionStyle transitionStyle = UIModalTransitionStyleCoverVertical; // default
-    if (browserOptions.transitionstyle != nil) {
-        if ([[browserOptions.transitionstyle lowercaseString] isEqualToString:@"fliphorizontal"]) {
-            transitionStyle = UIModalTransitionStyleFlipHorizontal;
-        } else if ([[browserOptions.transitionstyle lowercaseString] isEqualToString:@"crossdissolve"]) {
-            transitionStyle = UIModalTransitionStyleCrossDissolve;
-        }
-    }
-    self.inAppBrowserViewController.modalTransitionStyle = transitionStyle;
 
     // prevent webView from bouncing
     if (browserOptions.disallowoverscroll) {
@@ -240,22 +217,14 @@
 
 - (void)show:(CDVInvokedUrlCommand*)command
 {
-    // if (self.inAppBrowserViewController == nil) {
-    //     NSLog(@"Tried to show IAB after it was closed.");
-    //     return;
-    // }
-    // if (_previousStatusBarStyle != -1) {
-    //     NSLog(@"Tried to show IAB while already shown");
-    //     return;
-    // }
-
-    //    _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
-
     __block CDVInAppBrowserNavigationController* nav = [[CDVInAppBrowserNavigationController alloc]
                                                         initWithRootViewController:self.inAppBrowserViewController];
     nav.orientationDelegate = self.inAppBrowserViewController;
     nav.navigationBarHidden = YES;
-    nav.modalPresentationStyle = self.inAppBrowserViewController.modalPresentationStyle;
+    // hellow
+    nav.modalTransitionStyle = UIModalPresentationOverFullScreen;
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
+    nav.transitioningDelegate = nav;
 
     if (IsAtLeastiOSVersion(@"7.0")) {
         //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
@@ -277,8 +246,6 @@
     if (self.inAppBrowserViewController == nil) {
         NSLog(@"Tried to hide IAB after it was closed.");
         return;
-
-
     }
     if (_previousStatusBarStyle == -1) {
         NSLog(@"Tried to hide IAB while already hidden");
@@ -558,7 +525,7 @@
 
 // Prevent crashes on closing windows
 -(void)dealloc {
-    self.webView.delegate = nil;
+  self.webView.delegate = nil;
 }
 
 - (void)createViews
@@ -1517,6 +1484,8 @@
 
 @implementation CDVInAppBrowserNavigationController : UINavigationController
 
+@synthesize animator;
+
 - (void) dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
     if ( self.presentedViewController) {
         [super dismissViewControllerAnimated:flag completion:completion];
@@ -1578,5 +1547,25 @@
     return YES;
 }
 
+// hellow
+-(id) getAnimatorHelper {
+  CDVInAppBrowserAnimator *animator = [self animator];
+  if (!animator) {
+    animator = [[CDVInAppBrowserAnimator alloc] init];
+    [self setAnimator:animator];
+  }
+  return [self animator];
+}
+
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
+                                                                 presentingController:(UIViewController *)presenting
+                                                                     sourceController:(UIViewController *)source
+{
+  return [self getAnimatorHelper];
+}
+
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+  return [self getAnimatorHelper];
+}
 
 @end
