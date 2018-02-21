@@ -194,10 +194,15 @@
             </feature>
         </config-file>
 
+        <!-- Source files -->
         <header-file src="src/ios/CDVInAppBrowser.h" />
         <source-file src="src/ios/CDVInAppBrowser.m" />
         <header-file src="src/ios/CDVInAppBrowserBg.h" />
         <source-file src="src/ios/CDVInAppBrowserBg.m" />
+        <header-file src="src/ios/CDVInAppBrowserAnimator.h" />
+        <source-file src="src/ios/CDVInAppBrowserAnimator.m" />
+        <!-- Source files -->
+
         <!--resource-file src="src/ios/icon_share.jpg" target="src/ios/icon_share.jpg" /-->
         <resource-file src="src/ios/icon_share@1x~ipad.jpg" target="src/ios/icon_share@1x~ipad.jpg" />
         <resource-file src="src/ios/icon_share@2x~ipad.jpg" target="src/ios/icon_share@2x~ipad.jpg" />
