@@ -951,7 +951,7 @@ public class InAppBrowser extends CordovaPlugin {
                     fav.setBackgroundDrawable(shareIcon);
                 fav.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        sharePage();
+                        favPage();
                     }
                 });
 
@@ -972,7 +972,7 @@ public class InAppBrowser extends CordovaPlugin {
                     share.setBackgroundDrawable(favIcon);
                 share.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        favPage();
+                        sharePage();
                     }
                 });
 
