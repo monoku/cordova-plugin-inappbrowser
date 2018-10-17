@@ -424,7 +424,7 @@
             [self.commandDelegate sendPluginResult:pluginResult callbackId:scriptCallbackId];
             return NO;
         }
-    } 
+    }
     //if is an app store link, let the system handle it, otherwise it fails to load it
     else if ([[ url scheme] isEqualToString:@"itms-appss"] || [[ url scheme] isEqualToString:@"itms-apps"]) {
         [theWebView stopLoading];
@@ -535,12 +535,33 @@
     BOOL toolbarIsAtBottom = ![_browserOptions.toolbarposition isEqualToString:kInAppBrowserToolbarBarPositionTop];
 
     webViewBounds.size.height -= _browserOptions.location ? FOOTER_HEIGHT : TOOLBAR_HEIGHT;
-
+    bool isIphoneX = [self isIPhoneX];
     float toolbarY = toolbarIsAtBottom ? self.view.bounds.size.height - TOOLBAR_HEIGHT : 0.0;
+    if (isIphoneX == true) {
+        toolbarY = 30.0;
+    }
     CGRect toolbarFrame = CGRectMake(0.0, toolbarY, self.view.bounds.size.width, TOOLBAR_HEIGHT);
+    // Notch iPhone X
+    CGRect notchIPhoneX = CGRectMake(0.0, 0.0, self.view.bounds.size.width, 30);
+    UIToolbar *notch = [[UIToolbar alloc] initWithFrame:notchIPhoneX];
+    notch.alpha = 1.000;
+    notch.layer.borderWidth = 0.0;
+    notch.autoresizesSubviews = YES;
+    notch.autoresizingMask = toolbarIsAtBottom ? (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin) : UIViewAutoresizingFlexibleWidth;
+    //self.toolbar.barStyle = UIBarStyle;
+    notch.translucent = NO;
+    notch.backgroundColor = [UIColor whiteColor];
+    notch.clearsContextBeforeDrawing = NO;
+    notch.clipsToBounds = YES;
+    notch.contentMode = UIViewContentModeScaleToFill;
+    notch.hidden = NO;
+    notch.multipleTouchEnabled = NO;
+    notch.opaque = NO;
+    notch.userInteractionEnabled = YES;
 
     self.toolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
     self.toolbar.alpha = 1.000;
+    self.toolbar.layer.borderWidth = 0.0;
     self.toolbar.autoresizesSubviews = YES;
     self.toolbar.autoresizingMask = toolbarIsAtBottom ? (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin) : UIViewAutoresizingFlexibleWidth;
     //self.toolbar.barStyle = UIBarStyle;
@@ -548,14 +569,21 @@
     self.toolbar.tintColor = [UIColor whiteColor];
     self.toolbar.translucent = NO;
     self.toolbar.clearsContextBeforeDrawing = NO;
-    self.toolbar.clipsToBounds = NO;
+    self.toolbar.clipsToBounds = YES;
     self.toolbar.contentMode = UIViewContentModeScaleToFill;
     self.toolbar.hidden = NO;
     self.toolbar.multipleTouchEnabled = NO;
     self.toolbar.opaque = NO;
     self.toolbar.userInteractionEnabled = YES;
-
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - 55)];
+    float webViewY = [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height;
+    float webViewHeight = self.view.frame.size.height - 55;
+    float textWebViewHeight = self.view.frame.size.height;
+    if (isIphoneX == true) {
+        webViewY += 30;
+        webViewHeight -= 30;
+        textWebViewHeight -= 30;
+    }
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, webViewY, self.view.frame.size.width, webViewHeight)];
     self.webView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     self.webView.delegate = _webViewDelegate;
     self.webView.backgroundColor = [UIColor whiteColor];
@@ -567,7 +595,7 @@
     self.webView.scalesPageToFit = NO;
     self.webView.userInteractionEnabled = YES;
 
-    self.textWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
+    self.textWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, webViewY, self.view.frame.size.width, textWebViewHeight)];
     self.textWebView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     self.textWebView.backgroundColor = [UIColor whiteColor];
     self.textWebView.clearsContextBeforeDrawing = YES;
@@ -636,8 +664,11 @@
                                                        target:self
                                                        action:@selector(webViewSharePage)];
     self.shareButton.enabled = YES;
-
-    self.toolbarText = [[UIView alloc] initWithFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
+    float toolbarTextY = [self getStatusBarOffset] + self.toolbar.frame.size.height;
+    if (isIphoneX == true) {
+        toolbarTextY += 30;
+    }
+    self.toolbarText = [[UIView alloc] initWithFrame:CGRectMake(0.0, toolbarTextY, self.view.frame.size.width, self.view.frame.size.height)];
     self.toolbarText.autoresizesSubviews = NO;
     self.toolbarText.autoresizingMask = toolbarIsAtBottom ? (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin) : UIViewAutoresizingFlexibleWidth;
     //self.toolbar.barStyle = UIBarStyle;
@@ -784,6 +815,9 @@
 
     self.view.backgroundColor = [UIColor grayColor];
 
+    if (isIphoneX == true) {
+        [self.view addSubview:notch];
+    }
     [self.view addSubview:self.toolbar];
     [self.view addSubview:self.addressLabel];
 
@@ -792,6 +826,15 @@
     [self.view addSubview:self.toolbarText];
     [self.view addSubview:self.textWebView];
 
+}
+
+-(bool) isIPhoneX {
+    float height = self.view.frame.size.height;
+    bool isIphoneX = false;
+    if (height == 812 || height == 896) {
+        isIphoneX = true;
+    }
+    return isIphoneX;
 }
 
 -(void) showWebView {
@@ -808,8 +851,13 @@
     //if( !self.didInit ){
     self.didInit = YES;
     // [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height + self.webView.frame.size.height , self.webView.frame.size.width, self.webView.frame.size.height)];
+    bool isIPhoneX = [self isIPhoneX];
+    float webViewY = [self getStatusBarOffset] + self.toolbar.frame.size.height;
+    if (isIPhoneX == true) {
+        webViewY += 30;
+    }
     [UIView animateWithDuration:0.25 animations:^{
-        [self.webView setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - 55)];
+        [self.webView setFrame:CGRectMake(0.0, webViewY, self.view.frame.size.width, self.view.frame.size.height - 55)];
         // [self.textWebView setFrame:CGRectMake(self.textWebView.frame.origin.x, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.textWebView.frame.size.width, self.textWebView.frame.size.height)];
         [self.toolbarText setFrame:CGRectMake(0.0, [self getStatusBarOffset] + self.toolbar.frame.size.height, self.toolbarText.frame.size.width, 0)];
     } completion:^(BOOL finished) {
