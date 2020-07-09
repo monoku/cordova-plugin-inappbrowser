@@ -530,6 +530,7 @@
 
 - (void)createViews
 {
+    bool isDarkModeEnabled = [self isDarkMode];
     // We create the views in code for primarily for ease of upgrades and not requiring an external .xib to be included
     CGRect webViewBounds = self.view.bounds;
     BOOL toolbarIsAtBottom = ![_browserOptions.toolbarposition isEqualToString:kInAppBrowserToolbarBarPositionTop];
@@ -621,7 +622,7 @@
     //self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
 
-    NSString *pathC = @"icon_close.jpg";
+    NSString *pathC = (isDarkModeEnabled) ? @"icon_close_white.jpg" : @"icon_close.jpg";
     UIImage *imgC = [[UIImage imageNamed:pathC] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.closeButton = [[UIBarButtonItem alloc] initWithImage:imgC
                                                         style:UIBarButtonItemStylePlain
@@ -629,7 +630,7 @@
                                                        action:@selector(close)];
     self.closeButton.enabled = YES;
 
-    NSString *path = @"icon_fav.jpg";
+    NSString *path = (isDarkModeEnabled) ? @"icon_fav_white.png" : @"icon_fav.jpg";
     UIImage *img = [[UIImage imageNamed:path] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
     self.favButton = [[UIBarButtonItem alloc] initWithImage:img
@@ -639,7 +640,7 @@
     self.favButton.enabled = YES;
 
 
-    NSString *pathba = @"icon_arrow_left_active.jpg";
+    NSString *pathba = (isDarkModeEnabled) ? @"icon_arrow_left_active_white.png" : @"icon_arrow_left_active.jpg";
     UIImage *imgba = [[UIImage imageNamed:pathba] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.backButtonText = [[UIBarButtonItem alloc] initWithImage:imgba
                                                            style:UIBarButtonItemStylePlain
@@ -647,7 +648,7 @@
                                                           action:@selector(goBackText)];
     self.backButtonText.enabled = YES;
 
-    NSString *pathT = @"icon_fast.jpg";
+    NSString *pathT = (isDarkModeEnabled) ? @"icon_fast_white.jpg" : @"icon_fast.jpg";
     UIImage *imgT = [[UIImage imageNamed:pathT] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
     self.textButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -656,7 +657,7 @@
     self.textButton.enabled = YES;
     self.textButton.frame= CGRectMake(self.view.bounds.size.width/2-374/2, 80, 374, 142);
 
-    NSString *pathSh = @"icon_share.jpg";
+    NSString *pathSh = (isDarkModeEnabled) ? @"icon_share_white.png" : @"icon_share_white.jpg";
     UIImage *imgSh = [[UIImage imageNamed:pathSh] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
     self.shareButton = [[UIBarButtonItem alloc] initWithImage:imgSh
@@ -772,7 +773,7 @@
     //    self.forwardButton.enabled = YES;
     //    self.forwardButton.imageInsets = UIEdgeInsetsZero;
 
-    NSString *pathf = @"icon_arrow_right.jpg";
+    NSString *pathf = (isDarkModeEnabled) ? @"icon_arrow_right_white.png" : @"icon_arrow_right_white.jpg";
     UIImage *imgf = [[UIImage imageNamed:pathf] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
     self.forwardButton = [[UIBarButtonItem alloc] initWithImage:imgf
@@ -786,7 +787,7 @@
     //    self.backButton.enabled = YES;
     //    self.backButton.imageInsets = UIEdgeInsetsZero;
 
-    NSString *pathb = @"icon_arrow_left.jpg";
+    NSString *pathb = (isDarkModeEnabled) ? @"icon_arrow_left_white.png"  : @"icon_arrow_left.jpg";
     UIImage *imgb = [[UIImage imageNamed:pathb] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
     self.backButton = [[UIBarButtonItem alloc] initWithImage:imgb
@@ -835,6 +836,18 @@
         isIphoneX = true;
     }
     return isIphoneX;
+}
+
+-(bool) isDarkMode {
+    if (@available(iOS 12.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 
 -(void) showWebView {
@@ -1148,11 +1161,14 @@
 
 - (void)webViewTextMode
 {
+    bool isDarkModeEnabled = [self isDarkMode];
     if (self.navigationDelegate.callbackId != nil) {
+        
         self.textModeActivated = YES;
         self.textButton.enabled = NO;
         self.backButton.enabled = YES;
-        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        NSString *pathImgArrow = (isDarkModeEnabled) ? @"icon_arrow_left_active_white.png" : @"icon_arrow_left_active.jpg";
+        self.backButton.image = [[UIImage imageNamed: pathImgArrow] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         // TODO: It would be more useful to return the URL the page is actually on (e.g. if it's been redirected).
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsDictionary:@{@"type":@"text"}];
@@ -1338,17 +1354,23 @@
     self.addressLabel.text = NSLocalizedString(@"Loading...", nil);
     self.backButton.enabled = theWebView.canGoBack;
     self.forwardButton.enabled = theWebView.canGoForward;
+    
+    bool isDarkModeEnabled = [self isDarkMode];
+    NSString* pathImgArrowR_active = (isDarkModeEnabled) ? @"icon_arrow_right_active_white.png" : @"icon_arrow_right_active.jpg";
+    NSString* pathImgArrowR = (isDarkModeEnabled) ? @"icon_arrow_right_white.png" : @"icon_arrow_right.jpg";
+    NSString* pathImgArrowL_active = (isDarkModeEnabled) ? @"icon_arrow_left_active_white.png" : @"icon_arrow_left_active.jpg";
+    NSString* pathImgArrowL = (isDarkModeEnabled) ? @"icon_arrow_left_white.png" : @"icon_arrow_left.jpg";
 
     if (theWebView.canGoForward) {
-        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.forwardButton.image = [[UIImage imageNamed:pathImgArrowR_active] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }else{
-        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.forwardButton.image = [[UIImage imageNamed:pathImgArrowR] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }
 
     if (theWebView.canGoBack) {
-        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.backButton.image = [[UIImage imageNamed:pathImgArrowL_active] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }else{
-        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.backButton.image = [[UIImage imageNamed:pathImgArrowL] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }
 
     [self.spinner startAnimating];
@@ -1415,17 +1437,23 @@
     self.backButton.enabled = theWebView.canGoBack;
     self.forwardButton.enabled = theWebView.canGoForward;
     [self.spinner stopAnimating];
+    
+    bool isDarkModeEnabled = [self isDarkMode];
+    NSString* pathImgArrowR_active = (isDarkModeEnabled) ? @"icon_arrow_right_active_white.png" : @"icon_arrow_right_active.jpg";
+    NSString* pathImgArrowR = (isDarkModeEnabled) ? @"icon_arrow_right_white.png" : @"icon_arrow_right.jpg";
+    NSString* pathImgArrowL_active = (isDarkModeEnabled) ? @"icon_arrow_left_active_white.png" : @"icon_arrow_left_active.jpg";
+    NSString* pathImgArrowL = (isDarkModeEnabled) ? @"icon_arrow_left_white.png" : @"icon_arrow_left.jpg";
 
     if (theWebView.canGoForward) {
-        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.forwardButton.image = [[UIImage imageNamed:pathImgArrowR_active] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }else{
-        self.forwardButton.image = [[UIImage imageNamed:@"icon_arrow_right.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.forwardButton.image = [[UIImage imageNamed:pathImgArrowR] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }
 
     if (theWebView.canGoBack) {
-        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left_active.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.backButton.image = [[UIImage imageNamed:pathImgArrowL_active] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }else{
-        self.backButton.image = [[UIImage imageNamed:@"icon_arrow_left.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.backButton.image = [[UIImage imageNamed:pathImgArrowL] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }
 
     self.addressLabel.text = NSLocalizedString(@"Load Error", nil);
