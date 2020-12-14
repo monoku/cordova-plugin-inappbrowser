@@ -187,7 +187,7 @@
         </js-module>
         <config-file target="config.xml" parent="/*">
             <feature name="InAppBrowser">
-                <param name="ios-package" value="CDVInAppBrowser" />
+                <param name="ios-package" value="CDVWKInAppBrowser" />
                 <param name="onload" value="true" />
             </feature>
             <feature name="InAppBrowserBg">
@@ -204,10 +204,10 @@
 	    <source-file src="src/ios/CDVWKInAppBrowserUIDelegate.m" />
 
         <!-- Source files -->
-        <header-file src="src/ios/CDVInAppBrowser.h" />
-        <source-file src="src/ios/CDVInAppBrowser.m" />
-        <header-file src="src/ios/CDVInAppBrowserBg.h" />
-        <source-file src="src/ios/CDVInAppBrowserBg.m" />
+        <header-file src="src/osx/CDVInAppBrowser.h" />
+        <source-file src="src/osx/CDVInAppBrowser.m" />
+        <!-- <header-file src="src/ios/CDVInAppBrowserBg.h" />
+        <source-file src="src/ios/CDVInAppBrowserBg.m" /> -->
         <header-file src="src/ios/CDVInAppBrowserAnimator.h" />
         <source-file src="src/ios/CDVInAppBrowserAnimator.m" />
         <!-- Source files -->
