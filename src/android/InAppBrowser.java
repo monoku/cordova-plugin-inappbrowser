@@ -468,23 +468,23 @@ public class InAppBrowser extends CordovaPlugin {
         } else {
             LOG.d(LOG_TAG, "Can't inject code into the system browser");
         }
-        LOG.d(LOG_TAG, "MONOKU injecting: "+source);
-        final String finalScriptToInject = scriptToInject;
-        this.cordova.getActivity().runOnUiThread(new Runnable() {
-            @SuppressLint("NewApi")
-            @Override
-            public void run() {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    // This action will have the side-effect of blurring the currently focused element
-                    inAppWebView.loadUrl("javascript:" + finalScriptToInject);
-                    textWebView.loadUrl("javascript:" + finalScriptToInject);
-                } else {
-                    inAppWebView.evaluateJavascript(finalScriptToInject, null);
-                    textWebView.evaluateJavascript(finalScriptToInject, null);
-                }
-                LOG.d(LOG_TAG, finalScriptToInject);
-            }
-        });
+        // LOG.d(LOG_TAG, "MONOKU injecting: "+source);
+        // final String finalScriptToInject = scriptToInject;
+        // this.cordova.getActivity().runOnUiThread(new Runnable() {
+        //     @SuppressLint("NewApi")
+        //     @Override
+        //     public void run() {
+        //         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+        //             // This action will have the side-effect of blurring the currently focused element
+        //             inAppWebView.loadUrl("javascript:" + finalScriptToInject);
+        //             textWebView.loadUrl("javascript:" + finalScriptToInject);
+        //         } else {
+        //             inAppWebView.evaluateJavascript(finalScriptToInject, null);
+        //             textWebView.evaluateJavascript(finalScriptToInject, null);
+        //         }
+        //         LOG.d(LOG_TAG, finalScriptToInject);
+        //     }
+        // });
     }
 
     /**
