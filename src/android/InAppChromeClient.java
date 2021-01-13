@@ -177,7 +177,7 @@ public class InAppChromeClient extends WebChromeClient {
      */
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-        WebView inAppWebView = view;
+        final WebView inAppWebView = view;
         final WebViewClient webViewClient =
                 new WebViewClient() {
                     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
