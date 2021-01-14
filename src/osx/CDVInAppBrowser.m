@@ -82,7 +82,7 @@
 
 - (void)openInSystem:(NSURL*)url
 {
-    [[NSWorkspace sharedWorkspace] openURL:url];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 @end
